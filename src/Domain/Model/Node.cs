@@ -1,53 +1,50 @@
-﻿using System;
+﻿using Domain.Validation;
+using Domain.Validation.Contracts;
+using System;
+using System.Collections.Generic;
 
 namespace Domain.Model
 {
     public sealed class Node
     {
-        internal Node(Graph graph, int id, string label)
-        {
-            if (graph == null)
-            {
-                throw new ArgumentNullException(nameof(graph));
-            }
+        private readonly ISet<NodeReference> adjacentNodes;
 
-            Graph = graph;
+        private readonly INodeValidator nodeValidator;
+
+        internal Node(
+            string graphName,
+            int id,
+            string label,
+            ISet<NodeReference> adjacentNodes,
+            INodeValidator nodeValidator)
+        {
+            if (adjacentNodes == null)
+                throw new ArgumentNullException(nameof(adjacentNodes));
+
+            if (nodeValidator == null)
+                throw new ArgumentNullException(nameof(nodeValidator));
+
+            GraphName = graphName;
             Id = id;
             Label = label;
+            this.adjacentNodes = adjacentNodes;
+            this.nodeValidator = nodeValidator;
         }
+
+        public string GraphName { get; }
 
         public int Id { get; }
 
         public string Label { get; }
 
-        internal Graph Graph { get; }
+        public IEnumerable<NodeReference> AdjacentNodes => adjacentNodes;
 
-        public override bool Equals(object obj)
+        public void AddAdjacentNode(int nodeId)
         {
-            var node = obj as Node;
+            nodeValidator.ValidateId(nodeId).ThrowIfInvalid();
+            nodeValidator.ValidateAdjacency(Id, nodeId).ThrowIfInvalid();
 
-            if (!ReferenceEquals(node, null))
-            {
-                return Equals(node);
-            }
-
-            return base.Equals(obj);
-        }
-
-        public bool Equals(Node node)
-            => !ReferenceEquals(node, null) && Graph == node.Graph && Id == node.Id;
-
-        public override int GetHashCode()
-        {
-            int hash = 17;
-
-            unchecked
-            {
-                hash = hash * 23 + Graph.GetHashCode();
-                hash = hash * 23 + Id.GetHashCode();
-            }
-
-            return hash;
+            adjacentNodes.Add(new NodeReference(GraphName, nodeId));
         }
     }
 }

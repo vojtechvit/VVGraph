@@ -3,45 +3,41 @@ using Domain.Factories.Contracts;
 using Domain.Model;
 using Domain.Repositories.Contracts;
 using System;
+using System.Collections.Generic;
 
 namespace DataAccess.Neo4j.Repositories
 {
-    public class Neo4jGraphRepository : IGraphRepository
+    public sealed class Neo4jNodeRepository : INodeRepository
     {
         private readonly INeo4jDriver driver;
 
-        private readonly IGraphFactory graphFactory;
+        private readonly INodeFactory nodeFactory;
 
-        public Neo4jGraphRepository(
+        public Neo4jNodeRepository(
             INeo4jDriver driver,
-            IGraphFactory graphFactory)
+            INodeFactory nodeFactory)
         {
             if (driver == null)
                 throw new ArgumentNullException(nameof(driver));
 
-            if (graphFactory == null)
-                throw new ArgumentNullException(nameof(graphFactory));
+            if (nodeFactory == null)
+                throw new ArgumentNullException(nameof(nodeFactory));
 
             this.driver = driver;
-            this.graphFactory = graphFactory;
+            this.nodeFactory = nodeFactory;
         }
 
-        public bool Exists(string name)
+        public IReadOnlyCollection<Node> GetAllNodesForGraph(string graphName)
         {
             throw new NotImplementedException();
         }
 
-        public Graph Get(string name)
+        public void CreateAll(IEnumerable<Node> node)
         {
             throw new NotImplementedException();
         }
 
-        public void Create(Graph graph)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(string name)
+        public void DeleteAllForGraph(string graphName)
         {
             throw new NotImplementedException();
         }

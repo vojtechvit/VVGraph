@@ -5,7 +5,7 @@ namespace Domain.Validation
 {
     public sealed class GraphValidator : IGraphValidator
     {
-        public ValidationResult ValidateGraphName(string name)
+        public ValidationResult ValidateName(string name)
         {
             var result = new ValidationResult();
 

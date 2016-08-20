@@ -31,13 +31,17 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebServices.AspNetCore.Prox
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebServices.AspNetCore", "src\WebServices.AspNetCore\WebServices.AspNetCore.xproj", "{9439874E-9EE3-4780-B81F-D32EA19A994C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6 - Data Access", "6 - Data Access", "{A7F1529A-5BEE-4031-B47F-43B1AFBA852C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Data Access", "5 - Data Access", "{A7F1529A-5BEE-4031-B47F-43B1AFBA852C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Domain", "5 - Domain", "{2F210AF8-9868-4DCC-BB96-F6E52933B606}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Domain", "0 - Domain", "{2F210AF8-9868-4DCC-BB96-F6E52933B606}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Domain", "src\Domain\Domain.xproj", "{AF43A44D-33B1-4C48-A7A8-FAE1B4FE9B8F}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DataAccess.Neo4j", "src\DataAccess.Neo4j\DataAccess.Neo4j.xproj", "{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6 - Infrastructure", "6 - Infrastructure", "{ADA54476-354F-4E00-83B7-C4B7D77CD8F1}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Infrastructure.DependencyInjection", "src\Infrastructure.DependencyInjection\Infrastructure.DependencyInjection.xproj", "{FD2FB504-9E5B-45B3-8E70-3E98027621EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +89,10 @@ Global
 		{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD2FB504-9E5B-45B3-8E70-3E98027621EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD2FB504-9E5B-45B3-8E70-3E98027621EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD2FB504-9E5B-45B3-8E70-3E98027621EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD2FB504-9E5B-45B3-8E70-3E98027621EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,5 +110,6 @@ Global
 		{9439874E-9EE3-4780-B81F-D32EA19A994C} = {8D9BFCB8-1E1B-492C-95E4-CF43112F10A3}
 		{AF43A44D-33B1-4C48-A7A8-FAE1B4FE9B8F} = {2F210AF8-9868-4DCC-BB96-F6E52933B606}
 		{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B} = {A7F1529A-5BEE-4031-B47F-43B1AFBA852C}
+		{FD2FB504-9E5B-45B3-8E70-3E98027621EB} = {ADA54476-354F-4E00-83B7-C4B7D77CD8F1}
 	EndGlobalSection
 EndGlobal

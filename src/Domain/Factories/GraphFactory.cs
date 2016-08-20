@@ -11,10 +11,12 @@ namespace Domain.Factories
     {
         private readonly IGraphValidator graphValidator;
         private readonly IPathFinder pathFinder;
+        private readonly IEdgeEnumerator edgeEnumerator;
 
         public GraphFactory(
             IGraphValidator graphValidator,
-            IPathFinder pathFinder)
+            IPathFinder pathFinder,
+            IEdgeEnumerator edgeEnumerator)
         {
             if (graphValidator == null)
                 throw new ArgumentNullException(nameof(graphValidator));
@@ -22,15 +24,19 @@ namespace Domain.Factories
             if (pathFinder == null)
                 throw new ArgumentNullException(nameof(pathFinder));
 
+            if (edgeEnumerator == null)
+                throw new ArgumentNullException(nameof(edgeEnumerator));
+
             this.graphValidator = graphValidator;
             this.pathFinder = pathFinder;
+            this.edgeEnumerator = edgeEnumerator;
         }
 
         public Graph Create(string name)
         {
-            graphValidator.ValidateGraphName(name).ThrowIfInvalid();
+            graphValidator.ValidateName(name).ThrowIfInvalid();
 
-            return new Graph(name, pathFinder);
+            return new Graph(name, pathFinder, edgeEnumerator);
         }
     }
 }

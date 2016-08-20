@@ -4,6 +4,6 @@ namespace Domain.Validation.Contracts
 {
     public interface IGraphValidator
     {
-        ValidationResult ValidateGraphName(string name);
+        ValidationResult ValidateName(string name);
     }
 }

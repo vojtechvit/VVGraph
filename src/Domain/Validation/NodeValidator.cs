@@ -1,10 +1,11 @@
 ﻿using Domain.Validation.Contracts;
+using System;
 
 namespace Domain.Validation
 {
     public sealed class NodeValidator : INodeValidator
     {
-        public ValidationResult ValidateNodeId(int id)
+        public ValidationResult ValidateId(int id)
         {
             var result = new ValidationResult();
 
@@ -16,7 +17,7 @@ namespace Domain.Validation
             return result;
         }
 
-        public ValidationResult ValidateNodeLabel(string label)
+        public ValidationResult ValidateLabel(string label)
         {
             var result = new ValidationResult();
 
@@ -28,6 +29,18 @@ namespace Domain.Validation
             if (label == string.Empty)
             {
                 result.AddError("Node label must not be empty.");
+            }
+
+            return result;
+        }
+
+        public ValidationResult ValidateAdjacency(int startNodeId, int endNodeId)
+        {
+            var result = new ValidationResult();
+
+            if (startNodeId == endNodeId)
+            {
+                result.AddError("A node cannot be adjacent to itself.");
             }
 
             return result;

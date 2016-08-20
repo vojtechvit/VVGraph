@@ -8,13 +8,14 @@ namespace Domain.Model
     {
         private readonly HashSet<NodeReference> nodes = new HashSet<NodeReference>();
 
-        private readonly HashSet<Edge> edges = new HashSet<Edge>();
-
         private readonly IPathFinder pathFinder;
+
+        private readonly IEdgeEnumerator edgeEnumerator;
 
         internal Graph(
             string name,
-            IPathFinder pathFinder)
+            IPathFinder pathFinder,
+            IEdgeEnumerator edgeEnumerator)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -22,27 +23,23 @@ namespace Domain.Model
             if (pathFinder == null)
                 throw new ArgumentNullException(nameof(pathFinder));
 
+            if (edgeEnumerator == null)
+                throw new ArgumentNullException(nameof(edgeEnumerator));
+
             Name = name;
             this.pathFinder = pathFinder;
+            this.edgeEnumerator = edgeEnumerator;
         }
 
         public string Name { get; }
 
         public IReadOnlyCollection<NodeReference> Nodes => nodes;
 
-        public IReadOnlyCollection<Edge> Edges => edges;
+        public IReadOnlyCollection<Edge> Edges => edgeEnumerator.GetAllEdges(Name);
 
         public void AddNode(int nodeId)
         {
             nodes.Add(new NodeReference(Name, nodeId));
-        }
-
-        public void AddEdge(int startNodeId, int endNodeId)
-        {
-            var startNodeReference = new NodeReference(Name, startNodeId);
-            var endNodeReference = new NodeReference(Name, endNodeId);
-
-            edges.Add(new Edge(startNodeReference, endNodeReference));
         }
 
         public Path GetShortestPath(int startNodeId, int endNodeId)

@@ -2,8 +2,10 @@
 {
     public interface INodeValidator
     {
-        ValidationResult ValidateNodeId(int id);
+        ValidationResult ValidateId(int id);
 
-        ValidationResult ValidateNodeLabel(string label);
+        ValidationResult ValidateLabel(string label);
+
+        ValidationResult ValidateAdjacency(int startNodeId, int endNodeId);
     }
 }

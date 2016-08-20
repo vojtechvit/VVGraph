@@ -4,10 +4,12 @@ namespace Domain.Repositories.Contracts
 {
     public interface IGraphRepository
     {
-        bool Exists();
+        bool Exists(string name);
 
         Graph Get(string name);
 
-        void CreateOrReplace(Graph graph);
+        void Create(Graph graph);
+
+        void Delete(string name);
     }
 }

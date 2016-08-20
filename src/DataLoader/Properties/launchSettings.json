@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DataLoader": {
+      "commandName": "Project",
+      "commandLineArgs": "load"
+    }
+  }
+}

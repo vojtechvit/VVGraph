@@ -25,7 +25,7 @@ namespace Domain.Factories
             if (nodeIds == null)
                 throw new ArgumentNullException(nameof(nodeIds));
 
-            graphValidator.ValidateGraphName(graphName).ThrowIfInvalid();
+            graphValidator.ValidateName(graphName).ThrowIfInvalid();
 
             if (!nodeIds.Any())
                 throw new ModelValidationException("A path must consist of at least one node.");

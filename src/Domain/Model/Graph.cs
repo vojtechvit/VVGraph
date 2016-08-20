@@ -69,16 +69,6 @@ namespace Domain.Model
         }
 
         public Task<Path> FindShortestPathAsync(Node startNode, Node endNode)
-            => UnsupportedIfNull(pathFinder).FindShortestPathAsync(this, startNode, endNode);
-
-        private static T UnsupportedIfNull<T>(T value)
-        {
-            if (value == null)
-            {
-                throw new NotImplementedException("The implementation of the operation was not injected.");
-            }
-
-            return value;
-        }
+            => pathFinder.FindShortestPathAsync(this, startNode, endNode);
     }
 }

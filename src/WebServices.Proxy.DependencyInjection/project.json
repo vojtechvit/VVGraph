@@ -1,0 +1,13 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Microsoft.Extensions.DependencyInjection": "1.0.0",
+    "System.Runtime": "4.0.20",
+    "WebServices.Proxy": "1.0.0-*" // required by Microsoft.Extensions.DependencyInjection
+  },
+
+  "frameworks": {
+    "net461": {}
+  }
+}

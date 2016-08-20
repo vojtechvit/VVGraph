@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebServices.AspNetCore.Proxy.UnitTests
+namespace WebServices.Proxy.UnitTests
 {
     public class Class1
     {

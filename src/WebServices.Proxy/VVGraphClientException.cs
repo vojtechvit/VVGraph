@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace WebServices.AspNetCore.Proxy
+namespace WebServices.Proxy
 {
     [Serializable]
     public sealed class VVGraphClientException : Exception

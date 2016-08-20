@@ -7,8 +7,8 @@
 
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>2c9daa9f-d6fc-4ad4-a4ab-f935f5de55d4</ProjectGuid>
-    <RootNamespace>WebServices.Wcf.Proxy</RootNamespace>
+    <ProjectGuid>789e6437-4c52-4387-b60a-df0445e13da8</ProjectGuid>
+    <RootNamespace>WebServices.Proxy.DependencyInjection</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>

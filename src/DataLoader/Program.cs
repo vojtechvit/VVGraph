@@ -1,22 +1,10 @@
-﻿using DataLoader.Serialization;
-using DataLoader.Serialization.Contracts;
-using Domain.Factories;
-using Domain.Factories.Contracts;
-using Domain.Validation;
-using Domain.Validation.Contracts;
+﻿using DataLoader.Contracts;
 using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using WebServices.ApiModel;
-using WebServices.ApiModel.Mappers;
-using WebServices.ApiModel.Mappers.Contracts;
-using WebServices.AspNetCore.Proxy;
-using WebServices.AspNetCore.Proxy.Contracts;
+using WebServices.Proxy;
 
 namespace DataLoader
 {
@@ -50,7 +38,7 @@ namespace DataLoader
             return c =>
             {
                 c.Description = "Loads the XML node files from the specified directory into VV Graph database."
-                + " If a graph with the specified name already exists, it will get replaced.";
+                    + " If a graph with the specified name already exists, it will get replaced.";
 
                 var graphNameArg = c.Argument("[name]", "The name of the graph to be created/replaced");
                 var directoryOpt = c.Option("-directory <directory>", "The directory with input files", CommandOptionType.SingleValue);
@@ -90,36 +78,15 @@ namespace DataLoader
                 BaseUrl = baseUrl
             };
 
-            var graphDeserializer = serviceProvider.GetService<IFileSystemGraphDeserializer>();
-            var graphMapper = serviceProvider.GetService<IGraphMapper>();
-            var vvgraphClient = serviceProvider.GetService<IVVGraphClient>();
+            var dataLoader = serviceProvider.GetService<IDataLoader>();
 
-            var graphDeserializationResult = graphDeserializer.Deserialize(
+            dataLoader.LoadAsync(
                 graphNameArg.Value,
-                directoryOpt.Value());
-
-            UpdateDatabaseAsync(
-                graphNameArg,
-                vvgraphClient,
-                graphMapper,
-                graphDeserializationResult,
-                CancellationToken.None).Wait();
+                directoryOpt.Value(),
+                CancellationToken.None)
+                .Wait();
 
             return Success(application, "The graph was successfully created/updated");
-        }
-
-        private static async Task UpdateDatabaseAsync(
-            CommandArgument graphNameArg,
-            IVVGraphClient vvgraphClient,
-            IGraphMapper graphMapper,
-            GraphDeserializationResult graphDeserializationResult,
-            CancellationToken cancellationToken)
-        {
-            var domainGraph = graphDeserializationResult.Graph;
-
-            var graph = graphMapper.Map(graphDeserializationResult.Graph, graphDeserializationResult.Nodes);
-
-            await vvgraphClient.PutGraphAsync(graph, cancellationToken);
         }
 
         private static int Error(CommandLineApplication application, string message)
@@ -141,30 +108,8 @@ namespace DataLoader
         }
 
         private static IServiceProvider CreateServiceProvider()
-        {
-            var services = new ServiceCollection();
-
-            // Domain Validators
-            services.AddSingleton<IGraphValidator, GraphValidator>();
-            services.AddSingleton<INodeValidator, NodeValidator>();
-
-            // Domain Factories
-            services.AddSingleton<IGraphFactory, GraphFactory>();
-            services.AddSingleton<INodeFactory, NodeFactory>();
-            services.AddSingleton<IPathFactory, PathFactory>();
-
-            // Serializers
-            services.AddSingleton<IFileSystemNodeDeserializer, XmlFileNodeDeserializer>();
-            services.AddSingleton<IFileSystemGraphDeserializer, DirectoryGraphDeserializer>();
-
-            // Api Model Mappers
-            services.AddSingleton<IGraphMapper, GraphMapper>();
-            services.AddSingleton<INodeMapper, NodeMapper>();
-
-            // VVGraph Proxy
-            services.AddSingleton<IVVGraphClient, VVGraphClient>();
-
-            return services.BuildServiceProvider();
-        }
+            => new ServiceCollection()
+                .AddVVGraphDataLoader()
+                .BuildServiceProvider();
     }
 }

@@ -1,32 +1,36 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Net.Http;
+﻿using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WebServices.ApiModel;
-using WebServices.AspNetCore.Proxy.Contracts;
+using WebServices.Proxy.Contracts;
 
-namespace WebServices.AspNetCore.Proxy
+namespace WebServices.Proxy
 {
     public sealed class VVGraphClient : IVVGraphClient, IDisposable
     {
         private const string JsonMimeType = "application/json";
 
-        private readonly HttpClient httpClient;
-
         private readonly VVGraphClientConfiguration configuration;
+        private readonly IHttpClient httpClient;
+        private readonly IJsonSerializer jsonSerializer;
 
         private bool disposed;
 
         public VVGraphClient(
-            VVGraphClientConfiguration configuration)
+            VVGraphClientConfiguration configuration,
+            IHttpClient httpClient,
+            IJsonSerializer jsonSerializer)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
-            httpClient = new HttpClient();
+            if (jsonSerializer == null)
+                throw new ArgumentNullException(nameof(jsonSerializer));
+
+            this.httpClient = httpClient;
             this.configuration = configuration;
+            this.jsonSerializer = jsonSerializer;
         }
 
         public async Task PutGraphAsync(Graph graph, CancellationToken cancellationToken)
@@ -38,10 +42,9 @@ namespace WebServices.AspNetCore.Proxy
             {
                 var graphUrl = GetGraphUrl(graph.Name);
 
-                var body = JsonConvert.SerializeObject(graph);
-                var httpContent = new StringContent(body, Encoding.UTF8, JsonMimeType);
+                var body = jsonSerializer.Serialize(graph);
 
-                await httpClient.PutAsync(graphUrl, httpContent, cancellationToken);
+                await httpClient.PutAsync(graphUrl, body, Encoding.UTF8, JsonMimeType, cancellationToken);
             }
             catch (Exception exception)
             {

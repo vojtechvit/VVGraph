@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCopyright("Vojtěch Vít")]
-[assembly: AssemblyProduct("VVGraph")]
-
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("WebServices.Infrastructure.DependencyInjection")]
+[assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2c9daa9f-d6fc-4ad4-a4ab-f935f5de55d4")]
+[assembly: Guid("64d3eee1-b3a6-4a86-87c1-f2b2d7ab4a29")]

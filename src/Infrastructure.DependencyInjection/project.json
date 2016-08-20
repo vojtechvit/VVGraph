@@ -2,10 +2,9 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "WebServices.DataAccess.Neo4j": "1.0.0-*",
     "Domain": "1.0.0-*",
-    "Microsoft.Extensions.DependencyInjection": "1.0.0",
-    "WebServices.ApiModel.Mappers": "1.0.0-*"
+    "System.Runtime": "4.0.20", // required by Microsoft.Extensions.DependencyInjection
+    "Microsoft.Extensions.DependencyInjection": "1.0.0"
   },
 
   "frameworks": {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using WebServices.ApiModel;
 
-namespace WebServices.AspNetCore.Proxy.Contracts
+namespace WebServices.Proxy.Contracts
 {
     public interface IVVGraphClient
     {

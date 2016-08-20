@@ -7,8 +7,8 @@
 
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>f20df697-6c2f-40a3-a81f-0ac15498cb5f</ProjectGuid>
-    <RootNamespace>WebServices.AspNetCore.Proxy</RootNamespace>
+    <ProjectGuid>64d3eee1-b3a6-4a86-87c1-f2b2d7ab4a29</ProjectGuid>
+    <RootNamespace>WebServices.Infrastructure.DependencyInjection</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>

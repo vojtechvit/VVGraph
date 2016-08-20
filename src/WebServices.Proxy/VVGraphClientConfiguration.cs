@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebServices.AspNetCore.Proxy
+namespace WebServices.Proxy
 {
     public sealed class VVGraphClientConfiguration
     {

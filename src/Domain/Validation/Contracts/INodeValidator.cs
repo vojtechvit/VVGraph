@@ -1,4 +1,6 @@
-﻿namespace Domain.Validation.Contracts
+﻿using Domain.Model;
+
+namespace Domain.Validation.Contracts
 {
     public interface INodeValidator
     {
@@ -6,6 +8,6 @@
 
         ValidationResult ValidateLabel(string label);
 
-        ValidationResult ValidateAdjacency(int startNodeId, int endNodeId);
+        ValidationResult ValidateBelongingToGraph(Graph graph, Node node);
     }
 }

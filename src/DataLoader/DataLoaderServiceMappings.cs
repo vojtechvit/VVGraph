@@ -18,17 +18,13 @@ namespace DataLoader
                 // VV Graph Common
                 .AddVVGraphCommon()
 
-                // Domain Delegated Algorithms
-                .AddSingleton<IPathFinder>(sp => null)
-                .AddSingleton<IEdgeEnumerator>(sp => null)
-
                 // Serializers
-                .AddSingleton<IFileSystemNodeDeserializer, XmlFileNodeDeserializer>()
                 .AddSingleton<IFileSystemGraphDeserializer, DirectoryGraphDeserializer>()
 
                 // Api Model Mappers
                 .AddSingleton<IGraphMapper, GraphMapper>()
                 .AddSingleton<INodeMapper, NodeMapper>()
+                .AddSingleton<IEdgeMapper, EdgeMapper>()
 
                 // Data Loader
                 .AddSingleton<IDataLoader, DataLoader>()

@@ -27,10 +27,16 @@ namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
             this.pathFactory = pathFactory;
         }
 
-        public async Task<Path> GetShortestPathAsync(string graphName, int startNodeId, int endNodeId)
+        public async Task<Path> FindShortestPathAsync(Graph graph, Node startNode, Node endNode)
         {
-            if (graphName == null)
-                throw new ArgumentNullException(nameof(graphName));
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+
+            if (startNode == null)
+                throw new ArgumentNullException(nameof(startNode));
+
+            if (endNode == null)
+                throw new ArgumentNullException(nameof(endNode));
 
             var nodeIds = new List<int>();
 
@@ -38,7 +44,7 @@ namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
             {
             }
 
-            return pathFactory.Create(graphName, nodeIds);
+            return pathFactory.Create(graph.Nodes.Values);
         }
     }
 }

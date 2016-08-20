@@ -5,6 +5,6 @@ namespace Domain.Algorithms.Contracts
 {
     public interface IPathFinder
     {
-        Task<Path> GetShortestPathAsync(string graphName, int startNodeId, int endNodeId);
+        Task<Path> FindShortestPathAsync(Graph graphName, Node startNode, Node endNode);
     }
 }

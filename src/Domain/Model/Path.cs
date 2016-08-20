@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace Domain.Model
 {
-    public sealed class Path : IReadOnlyList<NodeReference>
+    public sealed class Path : IReadOnlyList<Node>
     {
-        private readonly IReadOnlyList<NodeReference> nodes;
+        private readonly IReadOnlyList<Node> nodes;
 
-        internal Path(IEnumerable<NodeReference> nodes)
+        internal Path(IEnumerable<Node> nodes)
         {
             if (nodes == null)
             {
@@ -19,11 +19,11 @@ namespace Domain.Model
             this.nodes = nodes.ToList();
         }
 
-        public NodeReference this[int index] => nodes[index];
+        public Node this[int index] => nodes[index];
 
         public int Count => nodes.Count;
 
-        public IEnumerator<NodeReference> GetEnumerator() => nodes.GetEnumerator();
+        public IEnumerator<Node> GetEnumerator() => nodes.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => nodes.GetEnumerator();
 

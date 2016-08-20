@@ -1,4 +1,6 @@
-﻿using Domain.Factories;
+﻿using Domain.Algorithms;
+using Domain.Algorithms.Contracts;
+using Domain.Factories;
 using Domain.Factories.Contracts;
 using Domain.Validation;
 using Domain.Validation.Contracts;
@@ -10,14 +12,16 @@ namespace Infrastructure.DependencyInjection
     {
         public static IServiceCollection AddVVGraphCommon(this IServiceCollection services)
             => services
+
                 // Domain Validators
                 .AddSingleton<IGraphValidator, GraphValidator>()
                 .AddSingleton<INodeValidator, NodeValidator>()
 
                 // Domain Factories
                 .AddSingleton<IGraphFactory, GraphFactory>()
-                .AddSingleton<INodeFactory, NodeFactory>()
-                .AddSingleton<IEdgeFactory, EdgeFactory>()
-                .AddSingleton<IPathFactory, PathFactory>();
+                .AddSingleton<IPathFactory, PathFactory>()
+
+                // Domain Delegated Algorithms
+                .AddSingleton<IPathFinder, DummyPathFinder>();
     }
 }

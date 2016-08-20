@@ -1,6 +1,5 @@
 ﻿using Domain.Factories.Contracts;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using WebServices.ApiModel.Mappers.Contracts;
 
@@ -10,10 +9,12 @@ namespace WebServices.ApiModel.Mappers
     {
         private readonly IGraphFactory graphFactory;
         private readonly INodeMapper nodeMapper;
+        private readonly IEdgeMapper edgeMapper;
 
         public GraphMapper(
             IGraphFactory graphFactory,
-            INodeMapper nodeMapper)
+            INodeMapper nodeMapper,
+            IEdgeMapper edgeMapper)
         {
             if (graphFactory == null)
                 throw new ArgumentNullException(nameof(graphFactory));
@@ -21,19 +22,40 @@ namespace WebServices.ApiModel.Mappers
             if (nodeMapper == null)
                 throw new ArgumentNullException(nameof(nodeMapper));
 
+            if (edgeMapper == null)
+                throw new ArgumentNullException(nameof(edgeMapper));
+
             this.graphFactory = graphFactory;
             this.nodeMapper = nodeMapper;
+            this.edgeMapper = edgeMapper;
         }
 
         public Domain.Model.Graph Map(Graph graph)
-            => graphFactory.Create(graph.Name);
+        {
+            var domainGraph = graphFactory.Create(graph.Name);
 
-        public Graph Map(Domain.Model.Graph graph, IEnumerable<Domain.Model.Node> nodes)
+            foreach (var node in graph.Nodes)
+            {
+                domainGraph.AddNode(node.Id, node.Label);
+            }
+
+            foreach (var edge in graph.Edges)
+            {
+                var startNode = domainGraph.Nodes[edge.StartNodeId];
+                var endNode = domainGraph.Nodes[edge.EndNodeId];
+
+                domainGraph.AddEdge(startNode, endNode);
+            }
+
+            return domainGraph;
+        }
+
+        public Graph Map(Domain.Model.Graph graph)
             => new Graph
             {
                 Name = graph.Name,
-                Nodes = nodes.Select(nodeMapper.Map),
-                Edges = nodeMapper.GetEdges(nodes)
+                Nodes = graph.Nodes.Values.Select(nodeMapper.Map),
+                Edges = graph.Edges.Select(edgeMapper.Map)
             };
     }
 }

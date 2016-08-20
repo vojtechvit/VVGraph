@@ -47,13 +47,11 @@ namespace DataLoader
 
             using (var vvGraphClient = vvGraphClientFactory.Create(vvGraphClientConfiguration))
             {
-                var graphDeserializationResult = graphDeserializer.Deserialize(
+                var graph = graphDeserializer.Deserialize(
                     graphName,
                     directory);
 
-                var apiModelGraph = graphMapper.Map(
-                    graphDeserializationResult.Graph,
-                    graphDeserializationResult.Nodes);
+                var apiModelGraph = graphMapper.Map(graph);
 
                 await vvGraphClient.PutGraphAsync(apiModelGraph, cancellationToken);
             }

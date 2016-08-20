@@ -1,4 +1,6 @@
 ﻿using Domain.Algorithms.Contracts;
+using Domain.Validation;
+using Domain.Validation.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,39 +9,67 @@ namespace Domain.Model
 {
     public sealed class Graph
     {
-        private readonly HashSet<NodeReference> nodes = new HashSet<NodeReference>();
-
+        private readonly Dictionary<int, Node> nodes = new Dictionary<int, Node>();
+        private readonly HashSet<Edge> edges = new HashSet<Edge>();
+        private readonly INodeValidator nodeValidator;
         private readonly IPathFinder pathFinder;
-
-        private readonly IEdgeEnumerator edgeEnumerator;
 
         internal Graph(
             string name,
-            IPathFinder pathFinder,
-            IEdgeEnumerator edgeEnumerator)
+            INodeValidator nodeValidator,
+            IPathFinder pathFinder)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
+            if (nodeValidator == null)
+                throw new ArgumentNullException(nameof(nodeValidator));
+
+            if (pathFinder == null)
+                throw new ArgumentNullException(nameof(pathFinder));
+
             Name = name;
+            this.nodeValidator = nodeValidator;
             this.pathFinder = pathFinder;
-            this.edgeEnumerator = edgeEnumerator;
         }
 
         public string Name { get; }
 
-        public IReadOnlyCollection<NodeReference> Nodes => nodes;
+        public IReadOnlyDictionary<int, Node> Nodes => nodes;
 
-        public Task<IReadOnlyCollection<Edge>> GetAllEdgesAsync
-            => UnsupportedIfNull(edgeEnumerator).GetAllEdgesAsync(Name);
+        public IReadOnlyCollection<Edge> Edges => edges;
 
-        public void AddNode(int nodeId)
+        public Node AddNode(int id, string label)
         {
-            nodes.Add(new NodeReference(Name, nodeId));
+            nodeValidator.ValidateId(id).ThrowIfInvalid();
+            nodeValidator.ValidateLabel(label).ThrowIfInvalid();
+
+            if (nodes.ContainsKey(id))
+            {
+                throw new ModelValidationException("A node with this key already exists");
+            }
+
+            var node = new Node(this, id, label);
+
+            nodes[id] = node;
+
+            return node;
         }
 
-        public Task<Path> GetShortestPathAsync(int startNodeId, int endNodeId)
-            => UnsupportedIfNull(pathFinder).GetShortestPathAsync(Name, startNodeId, endNodeId);
+        public Edge AddEdge(Node startNode, Node endNode)
+        {
+            nodeValidator.ValidateBelongingToGraph(this, startNode).ThrowIfInvalid();
+            nodeValidator.ValidateBelongingToGraph(this, endNode).ThrowIfInvalid();
+
+            var edge = new Edge(this, startNode, endNode);
+
+            edges.Add(edge);
+
+            return edge;
+        }
+
+        public Task<Path> FindShortestPathAsync(Node startNode, Node endNode)
+            => UnsupportedIfNull(pathFinder).FindShortestPathAsync(this, startNode, endNode);
 
         private static T UnsupportedIfNull<T>(T value)
         {

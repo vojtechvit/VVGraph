@@ -10,27 +10,33 @@ namespace Domain.Factories
     public sealed class GraphFactory : IGraphFactory
     {
         private readonly IGraphValidator graphValidator;
+        private readonly INodeValidator nodeValidator;
         private readonly IPathFinder pathFinder;
-        private readonly IEdgeEnumerator edgeEnumerator;
 
         public GraphFactory(
             IGraphValidator graphValidator,
-            IPathFinder pathFinder,
-            IEdgeEnumerator edgeEnumerator)
+            INodeValidator nodeValidator,
+            IPathFinder pathFinder)
         {
             if (graphValidator == null)
                 throw new ArgumentNullException(nameof(graphValidator));
 
+            if (nodeValidator == null)
+                throw new ArgumentNullException(nameof(nodeValidator));
+
+            if (pathFinder == null)
+                throw new ArgumentNullException(nameof(pathFinder));
+
             this.graphValidator = graphValidator;
+            this.nodeValidator = nodeValidator;
             this.pathFinder = pathFinder;
-            this.edgeEnumerator = edgeEnumerator;
         }
 
         public Graph Create(string name)
         {
             graphValidator.ValidateName(name).ThrowIfInvalid();
 
-            return new Graph(name, pathFinder, edgeEnumerator);
+            return new Graph(name, nodeValidator, pathFinder);
         }
     }
 }

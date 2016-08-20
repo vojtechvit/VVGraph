@@ -1,4 +1,5 @@
-﻿using Domain.Validation.Contracts;
+﻿using Domain.Model;
+using Domain.Validation.Contracts;
 using System;
 
 namespace Domain.Validation
@@ -34,14 +35,20 @@ namespace Domain.Validation
             return result;
         }
 
-        public ValidationResult ValidateAdjacency(int startNodeId, int endNodeId)
+        public ValidationResult ValidateBelongingToGraph(Graph graph, Node node)
         {
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
             var result = new ValidationResult();
 
-            ////  if (startNodeId == endNodeId)
-            ////  {
-            ////      result.AddError("A node cannot be adjacent to itself.");
-            ////  }
+            if (graph != node.Graph)
+            {
+                result.AddError($"The node with id '{node.Id}' belongs to graph '{node.Graph.Name}', but it should belong to graph '{graph.Name}' instead.");
+            }
 
             return result;
         }

@@ -12,44 +12,29 @@ namespace WebServices.AspNetCore.Controllers
     public class GraphsController : Controller
     {
         private readonly IGraphRepository graphRepository;
-        private readonly INodeRepository nodeRepository;
         private readonly IGraphMapper graphMapper;
-        private readonly INodeMapper nodeMapper;
 
         public GraphsController(
             IGraphRepository graphRepository,
-            INodeRepository nodeRepository,
-            IGraphMapper graphMapper,
-            INodeMapper nodeMapper)
+            IGraphMapper graphMapper)
         {
             if (graphRepository == null)
                 throw new System.ArgumentNullException(nameof(graphRepository));
 
-            if (nodeRepository == null)
-                throw new System.ArgumentNullException(nameof(nodeRepository));
-
             if (graphMapper == null)
                 throw new System.ArgumentNullException(nameof(graphMapper));
 
-            if (nodeMapper == null)
-                throw new System.ArgumentNullException(nameof(nodeMapper));
-
             this.graphRepository = graphRepository;
-            this.nodeRepository = nodeRepository;
             this.graphMapper = graphMapper;
-            this.nodeMapper = nodeMapper;
         }
 
         // GET api/v1/graphs/{graphName}
         [HttpGet("{graphName}")]
         public async Task<Graph> GetAsync(string graphName)
         {
-            var domainGraphTask = graphRepository.GetAsync(graphName);
-            var domainNodesTask = nodeRepository.GetAllNodesForGraphAsync(graphName);
+            var graph = await graphRepository.GetAsync(graphName);
 
-            await Task.WhenAll(domainGraphTask, domainNodesTask);
-
-            return graphMapper.Map(domainGraphTask.Result, domainNodesTask.Result);
+            return graphMapper.Map(graph);
         }
 
         // PUT api/v1/graphs/{graphName}
@@ -69,11 +54,8 @@ namespace WebServices.AspNetCore.Controllers
                 }
 
                 var domainGraph = graphMapper.Map(graph);
-                var domainNodes = nodeMapper.GetNodes(graph);
 
                 await graphRepository.DeleteAsync(domainGraph.Name);
-                await nodeRepository.DeleteAllForGraphAsync(domainGraph.Name);
-                await nodeRepository.CreateAllAsync(domainNodes);
                 await graphRepository.CreateAsync(domainGraph);
 
                 return NoContent();
@@ -102,14 +84,14 @@ namespace WebServices.AspNetCore.Controllers
             }
 
             var graph = await graphRepository.GetAsync(graphName);
-            var shortestPath = await graph.GetShortestPathAsync(startNodeId, endNodeId);
+            var shortestPath = await graph.FindShortestPathAsync(graph.Nodes[startNodeId], graph.Nodes[endNodeId]);
 
             if (shortestPath == null)
             {
                 return NoContent();
             }
 
-            return Ok(shortestPath.Select(n => n.NodeId).ToArray());
+            return Ok(shortestPath.Select(n => n.Id).ToArray());
         }
     }
 }

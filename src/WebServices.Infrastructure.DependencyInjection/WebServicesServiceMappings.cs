@@ -2,6 +2,7 @@
 using Domain.Repositories.Contracts;
 using Infrastructure.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using WebServices.ApiModel.Mappers;
 using WebServices.ApiModel.Mappers.Contracts;
 using WebServices.DataAccess.Neo4j;
@@ -14,23 +15,26 @@ namespace WebServices.Infrastructure.DependencyInjection
     public static class WebServicesServiceMappings
     {
         public static IServiceCollection AddVVGraphWebServicesCommon(this IServiceCollection services)
-            => services
-                // VV Graph Common
-                .AddVVGraphCommon()
+        {
+            // VV Graph Common
+            services.AddVVGraphCommon();
 
-                // Domain Repositories
-                .AddSingleton<IGraphRepository, Neo4jGraphRepository>()
-                .AddSingleton<INodeRepository, Neo4jNodeRepository>()
+            // Domain Repositories
+            services.AddSingleton<IGraphRepository, Neo4jGraphRepository>();
 
-                // Domain Delegated Algorithms
-                .AddSingleton<IPathFinder, Neo4jPathFinder>()
-                .AddSingleton<IEdgeEnumerator, Neo4jEdgeEnumerator>()
+            // Domain Delegated Algorithms
+            services.Remove(services.First(sd => sd.ServiceType == typeof(IPathFinder)));
+            services.AddSingleton<IPathFinder, Neo4jPathFinder>();
 
-                // Api Model Mappers
-                .AddSingleton<IGraphMapper, GraphMapper>()
+            // Api Model Mappers
+            services.AddSingleton<IGraphMapper, GraphMapper>()
                 .AddSingleton<INodeMapper, NodeMapper>()
+                .AddSingleton<IEdgeMapper, EdgeMapper>();
 
-                // Neo4j Infrastructure
-                .AddSingleton<INeo4jDriver, Neo4jDriver>();
+            // Neo4j Infrastructure
+            services.AddSingleton<INeo4jDriver, Neo4jDriver>();
+
+            return services;
+        }
     }
 }

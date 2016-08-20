@@ -11,26 +11,41 @@ namespace Domain.Factories
     public sealed class PathFactory : IPathFactory
     {
         private readonly IGraphValidator graphValidator;
+        private readonly INodeValidator nodeValidator;
 
-        public PathFactory(IGraphValidator graphValidator)
+        public PathFactory(
+            IGraphValidator graphValidator,
+            INodeValidator nodeValidator)
         {
             if (graphValidator == null)
                 throw new ArgumentNullException(nameof(graphValidator));
 
+            if (nodeValidator == null)
+                throw new ArgumentNullException(nameof(nodeValidator));
+
             this.graphValidator = graphValidator;
+            this.nodeValidator = nodeValidator;
         }
 
-        public Path Create(string graphName, IEnumerable<int> nodeIds)
+        public Path Create(IEnumerable<Node> nodes)
         {
-            if (nodeIds == null)
-                throw new ArgumentNullException(nameof(nodeIds));
+            if (nodes == null)
+                throw new ArgumentNullException(nameof(nodes));
 
-            graphValidator.ValidateName(graphName).ThrowIfInvalid();
-
-            if (!nodeIds.Any())
+            if (!nodes.Any())
                 throw new ModelValidationException("A path must consist of at least one node.");
 
-            return new Path(nodeIds.Select(nodeId => new NodeReference(graphName, nodeId)));
+            var graph = nodes.FirstOrDefault()?.Graph;
+
+            if (graph != null)
+            {
+                foreach (var node in nodes)
+                {
+                    nodeValidator.ValidateBelongingToGraph(graph, node);
+                }
+            }
+
+            return new Path(nodes);
         }
     }
 }

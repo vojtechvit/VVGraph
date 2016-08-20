@@ -6,6 +6,6 @@ namespace WebServices.ApiModel.Mappers.Contracts
     {
         Domain.Model.Graph Map(Graph graph);
 
-        Graph Map(Domain.Model.Graph graph, IEnumerable<Domain.Model.Node> nodes);
+        Graph Map(Domain.Model.Graph graph);
     }
 }

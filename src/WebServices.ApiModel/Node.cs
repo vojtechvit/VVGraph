@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebServices.AspNetCore.ApiModel
+namespace WebServices.ApiModel
 {
     public sealed class Node
     {

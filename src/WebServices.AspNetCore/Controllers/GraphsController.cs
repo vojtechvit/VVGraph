@@ -1,6 +1,7 @@
 ﻿using Domain.Repositories.Contracts;
 using Domain.Validation;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 using WebServices.ApiModel;
 using WebServices.ApiModel.Mappers.Contracts;
@@ -43,27 +44,12 @@ namespace WebServices.AspNetCore.Controllers
         [HttpGet("{graphName}")]
         public async Task<Graph> GetAsync(string graphName)
         {
-            return new Graph
-            {
-                Name = graphName,
-                Nodes = new[]
-                {
-                    new Node
-                    {
-                        Id = 1,
-                        Label = "Facebook"
-                    },
-                    new Node
-                    {
-                        Id = 2,
-                        Label = "Google"
-                    }
-                },
-                Edges = new[]
-                {
-                    new Edge { StartNodeId = 1, EndNodeId = 2 }
-                }
-            };
+            var domainGraphTask = graphRepository.GetAsync(graphName);
+            var domainNodesTask = nodeRepository.GetAllNodesForGraphAsync(graphName);
+
+            await Task.WhenAll(domainGraphTask, domainNodesTask);
+
+            return graphMapper.Map(domainGraphTask.Result, domainNodesTask.Result);
         }
 
         // PUT api/v1/graphs/{graphName}
@@ -87,8 +73,8 @@ namespace WebServices.AspNetCore.Controllers
 
                 await graphRepository.DeleteAsync(domainGraph.Name);
                 await nodeRepository.DeleteAllForGraphAsync(domainGraph.Name);
-                await graphRepository.CreateAsync(domainGraph);
                 await nodeRepository.CreateAllAsync(domainNodes);
+                await graphRepository.CreateAsync(domainGraph);
 
                 return NoContent();
             }
@@ -102,17 +88,28 @@ namespace WebServices.AspNetCore.Controllers
         [HttpGet("{graphName}/shortest-path")]
         public async Task<IActionResult> ShortestPathAsync(string graphName)
         {
-            int fromNodeId;
-            int toNodeId;
+            int startNodeId;
+            int endNodeId;
+
+            const string startNodeIdParameterName = "startNodeId";
+            const string endNodeIdParameterName = "endNodeId";
 
             if (graphName == null
-                || !Request.Query.ContainsKey("fromNodeId") || !int.TryParse(Request.Query["fromNodeId"], out fromNodeId)
-                || !Request.Query.ContainsKey("toNodeId") || !int.TryParse(Request.Query["toNodeId"], out toNodeId))
+                || !Request.Query.ContainsKey(startNodeIdParameterName) || !int.TryParse(Request.Query[startNodeIdParameterName], out startNodeId)
+                || !Request.Query.ContainsKey(endNodeIdParameterName) || !int.TryParse(Request.Query[endNodeIdParameterName], out endNodeId))
             {
                 return NotFound();
             }
 
-            return Ok(new[] { 1, 2, 3 });
+            var graph = await graphRepository.GetAsync(graphName);
+            var shortestPath = await graph.GetShortestPathAsync(startNodeId, endNodeId);
+
+            if (shortestPath == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(shortestPath.Select(n => n.NodeId).ToArray());
         }
     }
 }

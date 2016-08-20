@@ -1,7 +1,7 @@
-﻿using DataAccess.Neo4j;
-using DataAccess.Neo4j.Contracts;
-using DataAccess.Neo4j.DelegatedAlgorithms;
-using DataAccess.Neo4j.Repositories;
+﻿using WebServices.DataAccess.Neo4j;
+using WebServices.DataAccess.Neo4j.Contracts;
+using WebServices.DataAccess.Neo4j.DelegatedAlgorithms;
+using WebServices.DataAccess.Neo4j.Repositories;
 using Domain.Algorithms.Contracts;
 using Domain.Factories;
 using Domain.Factories.Contracts;

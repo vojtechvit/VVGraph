@@ -1,11 +1,11 @@
-﻿using DataAccess.Neo4j.Contracts;
+﻿using WebServices.DataAccess.Neo4j.Contracts;
 using Domain.Algorithms.Contracts;
 using Domain.Factories.Contracts;
 using Domain.Model;
 using System;
 using System.Collections.Generic;
 
-namespace DataAccess.Neo4j.DelegatedAlgorithms
+namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
 {
     public sealed class EdgeEnumerator : IEdgeEnumerator
     {

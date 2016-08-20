@@ -13,10 +13,12 @@ namespace Domain.Factories
         private readonly IGraphValidator graphValidator;
 
         private readonly INodeValidator nodeValidator;
+        private readonly IEdgeFactory edgeFactory;
 
         public NodeFactory(
             IGraphValidator graphValidator,
-            INodeValidator nodeValidator)
+            INodeValidator nodeValidator,
+            IEdgeFactory edgeFactory)
         {
             if (graphValidator == null)
                 throw new ArgumentNullException(nameof(graphValidator));
@@ -24,8 +26,12 @@ namespace Domain.Factories
             if (nodeValidator == null)
                 throw new ArgumentNullException(nameof(nodeValidator));
 
+            if (edgeFactory == null)
+                throw new ArgumentNullException(nameof(edgeFactory));
+
             this.graphValidator = graphValidator;
             this.nodeValidator = nodeValidator;
+            this.edgeFactory = edgeFactory;
         }
 
         public Node Create(string graphName, int id, string label, ISet<int> adjacentNodeIds)
@@ -45,7 +51,8 @@ namespace Domain.Factories
                 id,
                 label,
                 new HashSet<NodeReference>(adjacentNodeIds.Select(nodeId => new NodeReference(graphName, nodeId))),
-                nodeValidator);
+                nodeValidator,
+                edgeFactory);
         }
     }
 }

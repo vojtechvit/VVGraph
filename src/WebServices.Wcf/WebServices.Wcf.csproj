@@ -72,10 +72,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataAccess.Neo4j\DataAccess.Neo4j.xproj">
-      <Project>{4161e5fc-4b44-46db-bc6b-4c5ffdc20f2b}</Project>
-      <Name>DataAccess.Neo4j</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Domain\Domain.xproj">
       <Project>{af43a44d-33b1-4c48-a7a8-fae1b4fe9b8f}</Project>
       <Name>Domain</Name>

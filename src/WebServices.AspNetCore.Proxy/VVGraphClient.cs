@@ -29,26 +29,7 @@ namespace WebServices.AspNetCore.Proxy
             this.configuration = configuration;
         }
 
-        public async Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken)
-        {
-            if (graphName == null)
-                throw new ArgumentNullException(nameof(graphName));
-
-            try
-            {
-                var graphUrl = GetGraphUrl(graphName);
-
-                await httpClient.DeleteAsync(graphUrl, cancellationToken);
-            }
-            catch (Exception exception)
-            {
-                var exceptionWrap = new VVGraphClientException("A graph could not be deleted.", exception);
-                exceptionWrap.Data["GraphName"] = graphName;
-                throw exceptionWrap;
-            }
-        }
-
-        public async Task CreateGraphAsync(Graph graph, CancellationToken cancellationToken)
+        public async Task PutGraphAsync(Graph graph, CancellationToken cancellationToken)
         {
             if (graph == null)
                 throw new ArgumentNullException(nameof(graph));
@@ -60,11 +41,11 @@ namespace WebServices.AspNetCore.Proxy
                 var body = JsonConvert.SerializeObject(graph);
                 var httpContent = new StringContent(body, Encoding.UTF8, JsonMimeType);
 
-                await httpClient.PostAsync(graphUrl, httpContent, cancellationToken);
+                await httpClient.PutAsync(graphUrl, httpContent, cancellationToken);
             }
             catch (Exception exception)
             {
-                var exceptionWrap = new VVGraphClientException("A graph could not be created.", exception);
+                var exceptionWrap = new VVGraphClientException("A graph could not be created/replaced.", exception);
                 exceptionWrap.Data["GraphName"] = graph.Name;
                 throw exceptionWrap;
             }

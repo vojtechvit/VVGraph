@@ -1,11 +1,11 @@
-﻿using DataAccess.Neo4j.Contracts;
+﻿using WebServices.DataAccess.Neo4j.Contracts;
 using Domain.Factories.Contracts;
 using Domain.Model;
 using Domain.Repositories.Contracts;
 using System;
 using System.Collections.Generic;
 
-namespace DataAccess.Neo4j.Repositories
+namespace WebServices.DataAccess.Neo4j.Repositories
 {
     public sealed class Neo4jNodeRepository : INodeRepository
     {

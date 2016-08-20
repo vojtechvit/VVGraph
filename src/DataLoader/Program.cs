@@ -1,12 +1,20 @@
-﻿using DataAccess.Neo4j;
-using DataLoader.Serialization;
+﻿using DataLoader.Serialization;
 using DataLoader.Serialization.Contracts;
-using Domain.Repositories.Contracts;
-using Infrastructure.DependencyInjection;
+using Domain.Factories;
+using Domain.Factories.Contracts;
+using Domain.Validation;
+using Domain.Validation.Contracts;
 using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using WebServices.ApiModel;
+using WebServices.AspNetCore.Proxy;
+using WebServices.AspNetCore.Proxy.Contracts;
 
 namespace DataLoader
 {
@@ -23,7 +31,7 @@ namespace DataLoader
                 FullName = "VV Graph Data Loader"
             };
 
-            application.Command("load", LoadCommand(serviceProvider));
+            application.Command("load-graph", LoadCommand(serviceProvider));
 
             // show the help for the application
             application.OnExecute(() =>
@@ -42,14 +50,12 @@ namespace DataLoader
                 c.Description = "Loads the XML node files from the specified directory into VV Graph database."
                 + " If a graph with the specified name already exists, it will get replaced.";
 
-                var graphNameArg = c.Argument("[graph-name]", "The name of the graph to be created/replaced");
-                var pathArg = c.Argument("[path]", "The directory with input files");
-                var uriOpt = c.Option("-uri <uri>", "The URI of the Neo4j instance", CommandOptionType.SingleValue);
-                var usernameOpt = c.Option("-usr|--username <username>", "The username to use to connect to Neo4j", CommandOptionType.SingleValue);
-                var passwordOpt = c.Option("-pwd|--password <password>", "The password to use to connect to Neo4j", CommandOptionType.SingleValue);
+                var graphNameArg = c.Argument("[name]", "The name of the graph to be created/replaced");
+                var directoryOpt = c.Option("-directory <directory>", "The directory with input files", CommandOptionType.SingleValue);
+                var baseUrlOpt = c.Option("-url <url>", "The base URL of VV Graph API", CommandOptionType.SingleValue);
                 c.HelpOption("-?|-h|--help");
 
-                c.OnExecute(() => ExecuteLoad(c, serviceProvider, graphNameArg, pathArg, uriOpt, usernameOpt, passwordOpt));
+                c.OnExecute(() => ExecuteLoad(c, serviceProvider, graphNameArg, directoryOpt, baseUrlOpt));
             };
         }
 
@@ -57,80 +63,60 @@ namespace DataLoader
             CommandLineApplication application,
             IServiceProvider serviceProvider,
             CommandArgument graphNameArg,
-            CommandArgument pathArg,
-            CommandOption uriOpt,
-            CommandOption usernameOpt,
-            CommandOption passwordOpt)
+            CommandOption directoryOpt,
+            CommandOption baseUrlOpt)
         {
             if (string.IsNullOrWhiteSpace(graphNameArg.Value))
             {
                 return Error(application, "The 'graph-name' is missing");
             }
 
-            if (string.IsNullOrWhiteSpace(pathArg.Value) || !Directory.Exists(pathArg.Value))
+            if (!directoryOpt.HasValue() || !Directory.Exists(directoryOpt.Value()))
             {
-                return Error(application, "The 'path' is missing or nonexistent");
+                return Error(application, "The 'directory' is missing or nonexistent");
             }
 
-            Uri uri;
+            Uri baseUrl;
 
-            if (!uriOpt.HasValue() || !Uri.TryCreate(uriOpt.Value(), UriKind.Absolute, out uri))
+            if (!baseUrlOpt.HasValue() || !Uri.TryCreate(baseUrlOpt.Value(), UriKind.Absolute, out baseUrl))
             {
                 return Error(application, "The 'uri' is missing or could not be parsed");
             }
 
-            if (!usernameOpt.HasValue())
+            var neo4jConfiguration = new VVGraphClientConfiguration
             {
-                return Error(application, "The 'username' is missing");
-            }
-
-            if (!passwordOpt.HasValue())
-            {
-                return Error(application, "The 'password' is missing");
-            }
-
-            var neo4jConfiguration = new Neo4jConfiguration
-            {
-                Uri = uriOpt.Value(),
-                Username = usernameOpt.Value(),
-                Password = passwordOpt.Value()
+                BaseUrl = baseUrl
             };
 
             var graphDeserializer = serviceProvider.GetService<IFileSystemGraphDeserializer>();
-            var graphRepository = serviceProvider.GetService<IGraphRepository>();
-            var nodeRepository = serviceProvider.GetService<INodeRepository>();
+            var vvgraphClient = serviceProvider.GetService<IVVGraphClient>();
 
-            var graphDeserializationResult = graphDeserializer.Deserialize(graphNameArg.Value, pathArg.Value);
+            var graphDeserializationResult = graphDeserializer.Deserialize(graphNameArg.Value, directoryOpt.Value());
 
-            UpdateDatabase(graphNameArg, graphRepository, nodeRepository, graphDeserializationResult);
+            UpdateDatabaseAsync(graphNameArg, vvgraphClient, graphDeserializationResult, CancellationToken.None).Wait();
 
             return Success(application, "The graph was successfully created/updated");
         }
 
-        private static void UpdateDatabase(
+        private static async Task UpdateDatabaseAsync(
             CommandArgument graphNameArg,
-            IGraphRepository graphRepository,
-            INodeRepository nodeRepository,
-            GraphDeserializationResult graphDeserializationResult)
+            IVVGraphClient vvgraphClient,
+            GraphDeserializationResult graphDeserializationResult,
+            CancellationToken cancellationToken)
         {
-            //// We need to clean up previous records first.
-            //// Since we consider a node an aggregate root for performance reasons,
-            //// we may be relying on eventual consistency between graph and its nodes,
-            //// depending on the DAL implementation.
+            var domainGraph = graphDeserializationResult.Graph;
 
-            // Delete all nodes of the graph.
-            nodeRepository.DeleteAllForGraph(graphNameArg.Value);
+            var edges = new HashSet<Domain.Model.Edge>(graphDeserializationResult.Nodes.SelectMany(node => node.Edges))
+                .Select(edge => new Edge { StartNodeId = edge.StartNode.NodeId, EndNodeId = edge.EndNode.NodeId });
 
-            // Delete the graph.
-            graphRepository.Delete(graphNameArg.Value);
+            var apiGraph = new Graph
+            {
+                Name = domainGraph.Name,
+                Nodes = graphDeserializationResult.Nodes.Select(node => new Node { Id = node.Id, Label = node.Label }),
+                Edges = edges
+            };
 
-            //// Now we create new records
-
-            // Create the graph
-            graphRepository.Create(graphDeserializationResult.Graph);
-
-            // Create the graph nodes and edges
-            nodeRepository.CreateAll(graphDeserializationResult.Nodes);
+            await vvgraphClient.PutGraphAsync(apiGraph, cancellationToken);
         }
 
         private static int Error(CommandLineApplication application, string message)
@@ -155,10 +141,21 @@ namespace DataLoader
         {
             var services = new ServiceCollection();
 
-            services.AddVVGraphCommon();
+            // Domain Validators
+            services.AddSingleton<IGraphValidator, GraphValidator>();
+            services.AddSingleton<INodeValidator, NodeValidator>();
 
+            // Domain Factories
+            services.AddSingleton<IGraphFactory, GraphFactory>();
+            services.AddSingleton<INodeFactory, NodeFactory>();
+            services.AddSingleton<IPathFactory, PathFactory>();
+
+            // Serializers
             services.AddSingleton<IFileSystemNodeDeserializer, XmlFileNodeDeserializer>();
             services.AddSingleton<IFileSystemGraphDeserializer, DirectoryGraphDeserializer>();
+
+            // VVGraph Proxy
+            services.AddSingleton<IVVGraphClient, VVGraphClient>();
 
             return services.BuildServiceProvider();
         }

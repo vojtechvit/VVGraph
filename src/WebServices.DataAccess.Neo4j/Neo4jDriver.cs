@@ -1,9 +1,9 @@
-﻿using DataAccess.Neo4j.Contracts;
+﻿using WebServices.DataAccess.Neo4j.Contracts;
 using Microsoft.Extensions.Options;
 using Neo4j.Driver.V1;
 using System;
 
-namespace DataAccess.Neo4j
+namespace WebServices.DataAccess.Neo4j
 {
     public sealed class Neo4jDriver : INeo4jDriver, IDisposable
     {

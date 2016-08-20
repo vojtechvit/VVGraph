@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "DataAccess.Neo4j": "1.0.0-*",
+    "WebServices.DataAccess.Neo4j": "1.0.0-*",
     "Domain": "1.0.0-*",
     "Microsoft.Extensions.DependencyInjection": "1.0.0"
   },

@@ -1,10 +1,10 @@
-﻿using DataAccess.Neo4j.Contracts;
+﻿using WebServices.DataAccess.Neo4j.Contracts;
 using Domain.Factories.Contracts;
 using Domain.Model;
 using Domain.Repositories.Contracts;
 using System;
 
-namespace DataAccess.Neo4j.Repositories
+namespace WebServices.DataAccess.Neo4j.Repositories
 {
     public class Neo4jGraphRepository : IGraphRepository
     {

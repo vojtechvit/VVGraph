@@ -1,15 +1,16 @@
-﻿{
+{
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true
   },
 
   "dependencies": {
-    "DataAccess.Neo4j": "1.0.0-*",
+    "WebServices.DataAccess.Neo4j": "1.0.0-*",
     "Domain": "1.0.0-*",
-    "Infrastructure.DependencyInjection": "1.0.0-*",
     "Microsoft.Extensions.CommandLineUtils": "1.0.0",
-    "Microsoft.Extensions.DependencyInjection": "1.0.0"
+    "Microsoft.Extensions.DependencyInjection": "1.0.0",
+    "WebServices.ApiModel": "1.0.0-*",
+    "WebServices.AspNetCore.Proxy": "1.0.0-*"
   },
 
   "frameworks": {

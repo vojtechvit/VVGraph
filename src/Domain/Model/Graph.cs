@@ -20,12 +20,6 @@ namespace Domain.Model
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            if (pathFinder == null)
-                throw new ArgumentNullException(nameof(pathFinder));
-
-            if (edgeEnumerator == null)
-                throw new ArgumentNullException(nameof(edgeEnumerator));
-
             Name = name;
             this.pathFinder = pathFinder;
             this.edgeEnumerator = edgeEnumerator;
@@ -35,7 +29,8 @@ namespace Domain.Model
 
         public IReadOnlyCollection<NodeReference> Nodes => nodes;
 
-        public IReadOnlyCollection<Edge> Edges => edgeEnumerator.GetAllEdges(Name);
+        public IReadOnlyCollection<Edge> Edges
+            => UnsupportedIfNull(edgeEnumerator).GetAllEdges(Name);
 
         public void AddNode(int nodeId)
         {
@@ -43,6 +38,16 @@ namespace Domain.Model
         }
 
         public Path GetShortestPath(int startNodeId, int endNodeId)
-            => pathFinder.GetShortestPath(Name, startNodeId, endNodeId);
+            => UnsupportedIfNull(pathFinder).GetShortestPath(Name, startNodeId, endNodeId);
+
+        private static T UnsupportedIfNull<T>(T value)
+        {
+            if (value == null)
+            {
+                throw new NotImplementedException();
+            }
+
+            return value;
+        }
     }
 }

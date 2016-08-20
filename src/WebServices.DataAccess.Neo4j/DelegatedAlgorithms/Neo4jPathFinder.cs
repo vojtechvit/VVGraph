@@ -3,6 +3,7 @@ using Domain.Factories.Contracts;
 using Domain.Model;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebServices.DataAccess.Neo4j.Contracts;
 
 namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
@@ -26,7 +27,7 @@ namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
             this.pathFactory = pathFactory;
         }
 
-        public Path GetShortestPath(string graphName, int startNodeId, int endNodeId)
+        public async Task<Path> GetShortestPathAsync(string graphName, int startNodeId, int endNodeId)
         {
             if (graphName == null)
                 throw new ArgumentNullException(nameof(graphName));

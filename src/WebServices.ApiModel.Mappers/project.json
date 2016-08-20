@@ -1,0 +1,12 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Domain": "1.0.0-*",
+    "WebServices.ApiModel": "1.0.0-*"
+  },
+
+  "frameworks": {
+    "net461": {}
+  }
+}

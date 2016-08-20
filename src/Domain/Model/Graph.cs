@@ -1,6 +1,7 @@
 ﻿using Domain.Algorithms.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.Model
 {
@@ -29,22 +30,22 @@ namespace Domain.Model
 
         public IReadOnlyCollection<NodeReference> Nodes => nodes;
 
-        public IReadOnlyCollection<Edge> Edges
-            => UnsupportedIfNull(edgeEnumerator).GetAllEdges(Name);
+        public Task<IReadOnlyCollection<Edge>> GetAllEdgesAsync
+            => UnsupportedIfNull(edgeEnumerator).GetAllEdgesAsync(Name);
 
         public void AddNode(int nodeId)
         {
             nodes.Add(new NodeReference(Name, nodeId));
         }
 
-        public Path GetShortestPath(int startNodeId, int endNodeId)
-            => UnsupportedIfNull(pathFinder).GetShortestPath(Name, startNodeId, endNodeId);
+        public Task<Path> GetShortestPathAsync(int startNodeId, int endNodeId)
+            => UnsupportedIfNull(pathFinder).GetShortestPathAsync(Name, startNodeId, endNodeId);
 
         private static T UnsupportedIfNull<T>(T value)
         {
             if (value == null)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("The implementation of the operation was not injected.");
             }
 
             return value;

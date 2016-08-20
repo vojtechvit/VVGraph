@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WebServices.ApiModel;
+using WebServices.ApiModel.Mappers;
+using WebServices.ApiModel.Mappers.Contracts;
 using WebServices.AspNetCore.Proxy;
 using WebServices.AspNetCore.Proxy.Contracts;
 
@@ -89,11 +91,19 @@ namespace DataLoader
             };
 
             var graphDeserializer = serviceProvider.GetService<IFileSystemGraphDeserializer>();
+            var graphMapper = serviceProvider.GetService<IGraphMapper>();
             var vvgraphClient = serviceProvider.GetService<IVVGraphClient>();
 
-            var graphDeserializationResult = graphDeserializer.Deserialize(graphNameArg.Value, directoryOpt.Value());
+            var graphDeserializationResult = graphDeserializer.Deserialize(
+                graphNameArg.Value,
+                directoryOpt.Value());
 
-            UpdateDatabaseAsync(graphNameArg, vvgraphClient, graphDeserializationResult, CancellationToken.None).Wait();
+            UpdateDatabaseAsync(
+                graphNameArg,
+                vvgraphClient,
+                graphMapper,
+                graphDeserializationResult,
+                CancellationToken.None).Wait();
 
             return Success(application, "The graph was successfully created/updated");
         }
@@ -101,22 +111,15 @@ namespace DataLoader
         private static async Task UpdateDatabaseAsync(
             CommandArgument graphNameArg,
             IVVGraphClient vvgraphClient,
+            IGraphMapper graphMapper,
             GraphDeserializationResult graphDeserializationResult,
             CancellationToken cancellationToken)
         {
             var domainGraph = graphDeserializationResult.Graph;
 
-            var edges = new HashSet<Domain.Model.Edge>(graphDeserializationResult.Nodes.SelectMany(node => node.Edges))
-                .Select(edge => new Edge { StartNodeId = edge.StartNode.NodeId, EndNodeId = edge.EndNode.NodeId });
+            var graph = graphMapper.Map(graphDeserializationResult.Graph, graphDeserializationResult.Nodes);
 
-            var apiGraph = new Graph
-            {
-                Name = domainGraph.Name,
-                Nodes = graphDeserializationResult.Nodes.Select(node => new Node { Id = node.Id, Label = node.Label }),
-                Edges = edges
-            };
-
-            await vvgraphClient.PutGraphAsync(apiGraph, cancellationToken);
+            await vvgraphClient.PutGraphAsync(graph, cancellationToken);
         }
 
         private static int Error(CommandLineApplication application, string message)
@@ -153,6 +156,10 @@ namespace DataLoader
             // Serializers
             services.AddSingleton<IFileSystemNodeDeserializer, XmlFileNodeDeserializer>();
             services.AddSingleton<IFileSystemGraphDeserializer, DirectoryGraphDeserializer>();
+
+            // Api Model Mappers
+            services.AddSingleton<IGraphMapper, GraphMapper>();
+            services.AddSingleton<INodeMapper, NodeMapper>();
 
             // VVGraph Proxy
             services.AddSingleton<IVVGraphClient, VVGraphClient>();

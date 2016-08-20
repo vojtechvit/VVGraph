@@ -1,14 +1,15 @@
 ﻿using Domain.Model;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.Repositories.Contracts
 {
     public interface INodeRepository
     {
-        IReadOnlyCollection<Node> GetAllNodesForGraph(string graphName);
+        Task<IReadOnlyCollection<Node>> GetAllNodesForGraphAsync(string graphName);
 
-        void CreateAll(IEnumerable<Node> node);
+        Task CreateAllAsync(IEnumerable<Node> node);
 
-        void DeleteAllForGraph(string graphName);
+        Task DeleteAllForGraphAsync(string graphName);
     }
 }

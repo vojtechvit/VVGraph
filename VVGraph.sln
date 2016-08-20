@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Presentation", "2 - Pre
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebServices.DataAccess.Neo4j", "src\WebServices.DataAccess.Neo4j\WebServices.DataAccess.Neo4j.xproj", "{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebServices.ApiModel.Mappers", "src\WebServices.ApiModel.Mappers\WebServices.ApiModel.Mappers.xproj", "{ABBE80AB-FD2D-4C14-B969-4371A5BB94C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABBE80AB-FD2D-4C14-B969-4371A5BB94C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABBE80AB-FD2D-4C14-B969-4371A5BB94C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABBE80AB-FD2D-4C14-B969-4371A5BB94C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABBE80AB-FD2D-4C14-B969-4371A5BB94C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,5 +131,6 @@ Global
 		{2F5895C8-D814-410E-9894-C25F7C1FA2D1} = {8D9BFCB8-1E1B-492C-95E4-CF43112F10A3}
 		{E200CD02-D8BE-4FCF-8B6C-42CB7D2A7245} = {8D9BFCB8-1E1B-492C-95E4-CF43112F10A3}
 		{4161E5FC-4B44-46DB-BC6B-4C5FFDC20F2B} = {A7F1529A-5BEE-4031-B47F-43B1AFBA852C}
+		{ABBE80AB-FD2D-4C14-B969-4371A5BB94C1} = {2F5895C8-D814-410E-9894-C25F7C1FA2D1}
 	EndGlobalSection
 EndGlobal

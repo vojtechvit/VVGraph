@@ -1,8 +1,9 @@
-﻿using WebServices.DataAccess.Neo4j.Contracts;
-using Domain.Factories.Contracts;
+﻿using Domain.Factories.Contracts;
 using Domain.Model;
 using Domain.Repositories.Contracts;
 using System;
+using System.Threading.Tasks;
+using WebServices.DataAccess.Neo4j.Contracts;
 
 namespace WebServices.DataAccess.Neo4j.Repositories
 {
@@ -26,22 +27,22 @@ namespace WebServices.DataAccess.Neo4j.Repositories
             this.graphFactory = graphFactory;
         }
 
-        public bool Exists(string name)
+        public Task<bool> ExistsAsync(string name)
         {
             throw new NotImplementedException();
         }
 
-        public Graph Get(string name)
+        public Task<Graph> GetAsync(string name)
         {
             throw new NotImplementedException();
         }
 
-        public void Create(Graph graph)
+        public Task CreateAsync(Graph graph)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(string name)
+        public Task DeleteAsync(string name)
         {
             throw new NotImplementedException();
         }

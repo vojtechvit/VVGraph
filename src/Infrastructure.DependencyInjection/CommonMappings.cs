@@ -1,14 +1,16 @@
-﻿using WebServices.DataAccess.Neo4j;
-using WebServices.DataAccess.Neo4j.Contracts;
-using WebServices.DataAccess.Neo4j.DelegatedAlgorithms;
-using WebServices.DataAccess.Neo4j.Repositories;
-using Domain.Algorithms.Contracts;
+﻿using Domain.Algorithms.Contracts;
 using Domain.Factories;
 using Domain.Factories.Contracts;
 using Domain.Repositories.Contracts;
 using Domain.Validation;
 using Domain.Validation.Contracts;
 using Microsoft.Extensions.DependencyInjection;
+using WebServices.ApiModel.Mappers;
+using WebServices.ApiModel.Mappers.Contracts;
+using WebServices.DataAccess.Neo4j;
+using WebServices.DataAccess.Neo4j.Contracts;
+using WebServices.DataAccess.Neo4j.DelegatedAlgorithms;
+using WebServices.DataAccess.Neo4j.Repositories;
 
 namespace Infrastructure.DependencyInjection
 {
@@ -31,6 +33,11 @@ namespace Infrastructure.DependencyInjection
 
             // Domain Delegated Algorithms
             services.AddSingleton<IPathFinder, Neo4jPathFinder>();
+            services.AddSingleton<IEdgeEnumerator, Neo4jEdgeEnumerator>();
+
+            // Api Model Mappers
+            services.AddSingleton<IGraphMapper, GraphMapper>();
+            services.AddSingleton<INodeMapper, NodeMapper>();
 
             // Neo4j Infrastructure
             services.AddSingleton<INeo4jDriver, Neo4jDriver>();

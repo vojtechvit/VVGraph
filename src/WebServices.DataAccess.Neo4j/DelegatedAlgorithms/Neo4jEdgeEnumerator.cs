@@ -1,18 +1,19 @@
-﻿using WebServices.DataAccess.Neo4j.Contracts;
-using Domain.Algorithms.Contracts;
+﻿using Domain.Algorithms.Contracts;
 using Domain.Factories.Contracts;
 using Domain.Model;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebServices.DataAccess.Neo4j.Contracts;
 
 namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
 {
-    public sealed class EdgeEnumerator : IEdgeEnumerator
+    public sealed class Neo4jEdgeEnumerator : IEdgeEnumerator
     {
         private readonly INeo4jDriver driver;
         private readonly IEdgeFactory edgeFactory;
 
-        public EdgeEnumerator(
+        public Neo4jEdgeEnumerator(
             INeo4jDriver driver,
             IEdgeFactory edgeFactory)
         {
@@ -26,7 +27,7 @@ namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
             this.edgeFactory = edgeFactory;
         }
 
-        public IReadOnlyCollection<Edge> GetAllEdges(string graphName)
+        public Task<IReadOnlyCollection<Edge>> GetAllEdgesAsync(string graphName)
         {
             throw new NotImplementedException();
         }

@@ -1,15 +1,16 @@
 ﻿using Domain.Model;
+using System.Threading.Tasks;
 
 namespace Domain.Repositories.Contracts
 {
     public interface IGraphRepository
     {
-        bool Exists(string name);
+        Task<bool> ExistsAsync(string name);
 
-        Graph Get(string name);
+        Task<Graph> GetAsync(string name);
 
-        void Create(Graph graph);
+        Task CreateAsync(Graph graph);
 
-        void Delete(string name);
+        Task DeleteAsync(string name);
     }
 }

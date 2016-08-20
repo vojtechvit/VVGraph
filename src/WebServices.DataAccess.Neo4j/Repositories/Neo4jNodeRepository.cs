@@ -1,9 +1,10 @@
-﻿using WebServices.DataAccess.Neo4j.Contracts;
-using Domain.Factories.Contracts;
+﻿using Domain.Factories.Contracts;
 using Domain.Model;
 using Domain.Repositories.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebServices.DataAccess.Neo4j.Contracts;
 
 namespace WebServices.DataAccess.Neo4j.Repositories
 {
@@ -27,17 +28,17 @@ namespace WebServices.DataAccess.Neo4j.Repositories
             this.nodeFactory = nodeFactory;
         }
 
-        public IReadOnlyCollection<Node> GetAllNodesForGraph(string graphName)
+        public Task<IReadOnlyCollection<Node>> GetAllNodesForGraphAsync(string graphName)
         {
             throw new NotImplementedException();
         }
 
-        public void CreateAll(IEnumerable<Node> node)
+        public Task CreateAllAsync(IEnumerable<Node> node)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteAllForGraph(string graphName)
+        public Task DeleteAllForGraphAsync(string graphName)
         {
             throw new NotImplementedException();
         }

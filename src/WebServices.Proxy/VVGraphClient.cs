@@ -7,7 +7,7 @@ using WebServices.Proxy.Contracts;
 
 namespace WebServices.Proxy
 {
-    public sealed class VVGraphClient : IVVGraphClient, IDisposable
+    public sealed class VVGraphClient : IVVGraphClient
     {
         private const string JsonMimeType = "application/json";
 

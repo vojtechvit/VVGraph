@@ -17,6 +17,7 @@ namespace Infrastructure.DependencyInjection
                 // Domain Factories
                 .AddSingleton<IGraphFactory, GraphFactory>()
                 .AddSingleton<INodeFactory, NodeFactory>()
+                .AddSingleton<IEdgeFactory, EdgeFactory>()
                 .AddSingleton<IPathFactory, PathFactory>();
     }
 }

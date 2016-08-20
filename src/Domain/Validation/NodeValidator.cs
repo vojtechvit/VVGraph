@@ -38,10 +38,10 @@ namespace Domain.Validation
         {
             var result = new ValidationResult();
 
-            if (startNodeId == endNodeId)
-            {
-                result.AddError("A node cannot be adjacent to itself.");
-            }
+            ////  if (startNodeId == endNodeId)
+            ////  {
+            ////      result.AddError("A node cannot be adjacent to itself.");
+            ////  }
 
             return result;
         }

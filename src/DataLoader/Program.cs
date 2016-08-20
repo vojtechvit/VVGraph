@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Threading;
-using WebServices.Proxy;
 
 namespace DataLoader
 {
@@ -41,8 +40,8 @@ namespace DataLoader
                     + " If a graph with the specified name already exists, it will get replaced.";
 
                 var graphNameArg = c.Argument("[name]", "The name of the graph to be created/replaced");
-                var directoryOpt = c.Option("-directory <directory>", "The directory with input files", CommandOptionType.SingleValue);
-                var baseUrlOpt = c.Option("-url <url>", "The base URL of VV Graph API", CommandOptionType.SingleValue);
+                var directoryOpt = c.Option("-dir|--directory <directory>", "The directory with input files", CommandOptionType.SingleValue);
+                var baseUrlOpt = c.Option("-url|--url <url>", "The base URL of VV Graph API", CommandOptionType.SingleValue);
                 c.HelpOption("-?|-h|--help");
 
                 c.OnExecute(() => ExecuteLoad(c, serviceProvider, graphNameArg, directoryOpt, baseUrlOpt));
@@ -73,14 +72,10 @@ namespace DataLoader
                 return Error(application, "The 'uri' is missing or could not be parsed");
             }
 
-            var neo4jConfiguration = new VVGraphClientConfiguration
-            {
-                BaseUrl = baseUrl
-            };
-
             var dataLoader = serviceProvider.GetService<IDataLoader>();
 
             dataLoader.LoadAsync(
+                baseUrl,
                 graphNameArg.Value,
                 directoryOpt.Value(),
                 CancellationToken.None)

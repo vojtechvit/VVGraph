@@ -7,7 +7,7 @@ namespace WebServices.Proxy.DependencyInjection
     {
         public static IServiceCollection AddVVGraphClient(this IServiceCollection services)
             => services
-                .AddSingleton<IVVGraphClient, VVGraphClient>()
+                .AddSingleton<IVVGraphClientFactory, VVGraphClientFactory>()
                 .AddSingleton<IJsonSerializer, JsonSerializerAdapter>()
                 .AddSingleton<IHttpClient, HttpClientAdapter>();
     }

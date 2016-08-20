@@ -1,6 +1,7 @@
 ﻿using DataLoader.Contracts;
 using DataLoader.Serialization;
 using DataLoader.Serialization.Contracts;
+using Domain.Algorithms.Contracts;
 using Infrastructure.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using WebServices.ApiModel.Mappers;
@@ -11,10 +12,15 @@ namespace DataLoader
 {
     public static class DataLoaderServiceMappings
     {
-        public static IServiceCollection AddVVGraphDataLoader(this IServiceCollection services)
+        public static IServiceCollection AddVVGraphDataLoader(
+            this IServiceCollection services)
             => services
                 // VV Graph Common
                 .AddVVGraphCommon()
+
+                // Domain Delegated Algorithms
+                .AddSingleton<IPathFinder>(sp => null)
+                .AddSingleton<IEdgeEnumerator>(sp => null)
 
                 // Serializers
                 .AddSingleton<IFileSystemNodeDeserializer, XmlFileNodeDeserializer>()

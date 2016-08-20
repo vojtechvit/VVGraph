@@ -21,12 +21,6 @@ namespace Domain.Factories
             if (graphValidator == null)
                 throw new ArgumentNullException(nameof(graphValidator));
 
-            if (pathFinder == null)
-                throw new ArgumentNullException(nameof(pathFinder));
-
-            if (edgeEnumerator == null)
-                throw new ArgumentNullException(nameof(edgeEnumerator));
-
             this.graphValidator = graphValidator;
             this.pathFinder = pathFinder;
             this.edgeEnumerator = edgeEnumerator;

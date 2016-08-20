@@ -11,20 +11,14 @@ namespace DataLoader.Serialization
 {
     public sealed class XmlFileNodeDeserializer : IFileSystemNodeDeserializer
     {
-        private readonly IFileSystemNodeDeserializer fileSystemNodeDeserializer;
         private readonly INodeFactory nodeFactory;
 
         public XmlFileNodeDeserializer(
-            IFileSystemNodeDeserializer fileSystemNodeDeserializer,
             INodeFactory nodeFactory)
         {
-            if (fileSystemNodeDeserializer == null)
-                throw new ArgumentNullException(nameof(fileSystemNodeDeserializer));
-
             if (nodeFactory == null)
                 throw new ArgumentNullException(nameof(nodeFactory));
 
-            this.fileSystemNodeDeserializer = fileSystemNodeDeserializer;
             this.nodeFactory = nodeFactory;
         }
 
@@ -34,13 +28,14 @@ namespace DataLoader.Serialization
                 throw new ArgumentNullException(nameof(path));
 
             var xdocument = XDocument.Load(path);
+            var nodeElement = xdocument.Element("node");
 
-            var id = int.Parse(xdocument.Element("id").Value, CultureInfo.InvariantCulture);
+            var id = int.Parse(nodeElement.Element("id").Value, CultureInfo.InvariantCulture);
 
-            var label = xdocument.Element("label").Value;
+            var label = nodeElement.Element("label").Value;
 
             var adjacentNodeIds = new HashSet<int>(
-                xdocument
+                nodeElement
                     .Element("adjacentNodes")
                     .Elements()
                     .Select(e => int.Parse(e.Value, CultureInfo.InvariantCulture)));

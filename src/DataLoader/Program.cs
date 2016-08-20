@@ -102,6 +102,17 @@ namespace DataLoader
 
             var graphDeserializationResult = graphDeserializer.Deserialize(graphNameArg.Value, pathArg.Value);
 
+            UpdateDatabase(graphNameArg, graphRepository, nodeRepository, graphDeserializationResult);
+
+            return Success(application, "The graph was successfully created/updated");
+        }
+
+        private static void UpdateDatabase(
+            CommandArgument graphNameArg,
+            IGraphRepository graphRepository,
+            INodeRepository nodeRepository,
+            GraphDeserializationResult graphDeserializationResult)
+        {
             //// We need to clean up previous records first.
             //// Since we consider a node an aggregate root for performance reasons,
             //// we may be relying on eventual consistency between graph and its nodes,
@@ -120,8 +131,6 @@ namespace DataLoader
 
             // Create the graph nodes and edges
             nodeRepository.CreateAll(graphDeserializationResult.Nodes);
-
-            return Success(application, "The graph was successfully created/updated");
         }
 
         private static int Error(CommandLineApplication application, string message)

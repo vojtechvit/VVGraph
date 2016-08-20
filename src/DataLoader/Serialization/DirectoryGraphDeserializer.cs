@@ -39,7 +39,7 @@ namespace DataLoader.Serialization
 
             foreach (var filePath in Directory.EnumerateFiles(path))
             {
-                var node = fileSystemNodeDeserializer.Deserialize(filePath);
+                var node = fileSystemNodeDeserializer.Deserialize(graphName, filePath);
 
                 graph.AddNode(node.Id);
 

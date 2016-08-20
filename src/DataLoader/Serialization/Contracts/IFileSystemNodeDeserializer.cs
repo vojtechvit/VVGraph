@@ -4,6 +4,6 @@ namespace DataLoader.Serialization.Contracts
 {
     public interface IFileSystemNodeDeserializer
     {
-        Node Deserialize(string path);
+        Node Deserialize(string graphName, string path);
     }
 }

@@ -2,6 +2,10 @@
 using Domain.Factories.Contracts;
 using Domain.Model;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace DataLoader.Serialization
 {
@@ -24,12 +28,24 @@ namespace DataLoader.Serialization
             this.nodeFactory = nodeFactory;
         }
 
-        public Node Deserialize(string path)
+        public Node Deserialize(string graphName, string path)
         {
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
 
-            throw new NotImplementedException();
+            var xdocument = XDocument.Load(path);
+
+            var id = int.Parse(xdocument.Element("id").Value, CultureInfo.InvariantCulture);
+
+            var label = xdocument.Element("label").Value;
+
+            var adjacentNodeIds = new HashSet<int>(
+                xdocument
+                    .Element("adjacentNodes")
+                    .Elements()
+                    .Select(e => int.Parse(e.Value, CultureInfo.InvariantCulture)));
+
+            return nodeFactory.Create(graphName, id, label, adjacentNodeIds);
         }
     }
 }

@@ -4,25 +4,21 @@ namespace Domain.Model
 {
     public sealed class Edge
     {
-        internal Edge(Node startNode, Node endNode)
+        internal Edge(NodeReference startNode, NodeReference endNode)
         {
             if (startNode == null)
-            {
                 throw new ArgumentNullException(nameof(startNode));
-            }
 
             if (endNode == null)
-            {
                 throw new ArgumentNullException(nameof(endNode));
-            }
 
             StartNode = startNode;
             EndNode = endNode;
         }
 
-        public Node StartNode { get; }
+        public NodeReference StartNode { get; }
 
-        public Node EndNode { get; }
+        public NodeReference EndNode { get; }
 
         public override bool Equals(object obj)
         {

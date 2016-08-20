@@ -5,27 +5,27 @@ using System.Linq;
 
 namespace Domain.Model
 {
-    public sealed class Path : IReadOnlyList<Node>
+    public sealed class Path : IReadOnlyList<NodeReference>
     {
-        private readonly IReadOnlyList<Node> _path;
+        private readonly IReadOnlyList<NodeReference> nodes;
 
-        internal Path(IReadOnlyList<Node> path)
+        internal Path(IEnumerable<NodeReference> nodes)
         {
-            if (path == null)
+            if (nodes == null)
             {
-                throw new ArgumentNullException(nameof(path));
+                throw new ArgumentNullException(nameof(nodes));
             }
 
-            _path = path;
+            this.nodes = nodes.ToList();
         }
 
-        public Node this[int index] => _path[index];
+        public NodeReference this[int index] => nodes[index];
 
-        public int Count => _path.Count;
+        public int Count => nodes.Count;
 
-        public IEnumerator<Node> GetEnumerator() => _path.GetEnumerator();
+        public IEnumerator<NodeReference> GetEnumerator() => nodes.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => _path.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => nodes.GetEnumerator();
 
         public override bool Equals(object obj)
         {
@@ -40,7 +40,7 @@ namespace Domain.Model
         }
 
         public bool Equals(Path path)
-            => !ReferenceEquals(path, null) && _path.SequenceEqual(path._path);
+            => !ReferenceEquals(path, null) && nodes.SequenceEqual(path.nodes);
 
         public override int GetHashCode()
         {
@@ -48,7 +48,7 @@ namespace Domain.Model
 
             unchecked
             {
-                foreach (Node node in _path)
+                foreach (var node in nodes)
                 {
                     hash = hash * 23 + node.GetHashCode();
                 }

@@ -1,44 +1,36 @@
 ﻿using Domain.Algorithms.Contracts;
-using Domain.Exceptions;
 using Domain.Factories.Contracts;
 using Domain.Model;
+using Domain.Validation;
+using Domain.Validation.Contracts;
 using System;
-using System.Text.RegularExpressions;
 
 namespace Domain.Factories
 {
     public sealed class GraphFactory : IGraphFactory
     {
-        private readonly IPathFinder _pathFinder;
+        private readonly IGraphValidator graphValidator;
+        private readonly IPathFinder pathFinder;
 
-        public GraphFactory(IPathFinder pathFinder)
+        public GraphFactory(
+            IGraphValidator graphValidator,
+            IPathFinder pathFinder)
         {
-            if (pathFinder == null)
-            {
-                throw new ArgumentNullException(nameof(pathFinder));
-            }
+            if (graphValidator == null)
+                throw new ArgumentNullException(nameof(graphValidator));
 
-            _pathFinder = pathFinder;
+            if (pathFinder == null)
+                throw new ArgumentNullException(nameof(pathFinder));
+
+            this.graphValidator = graphValidator;
+            this.pathFinder = pathFinder;
         }
 
         public Graph Create(string name)
         {
-            if (name == null)
-            {
-                throw new ModelValidationException("Graph name is required.");
-            }
+            graphValidator.ValidateGraphName(name).ThrowIfInvalid();
 
-            if (name.Length <= 0)
-            {
-                throw new ModelValidationException("Graph name must be at least 1 character long.");
-            }
-
-            if (!Regex.IsMatch(name, "[a-z0-9]"))
-            {
-                throw new ModelValidationException("Graph name may contain only lowercase alphanumeric characters.");
-            }
-
-            return new Graph(name, _pathFinder);
+            return new Graph(name, pathFinder);
         }
     }
 }

@@ -4,6 +4,6 @@ namespace Domain.Algorithms.Contracts
 {
     public interface IPathFinder
     {
-        Path GetShortestPath(Graph graph, Node startNode, Node endNode);
+        Path GetShortestPath(string graphName, int startNodeId, int endNodeId);
     }
 }

@@ -1,131 +1,51 @@
 ﻿using Domain.Algorithms.Contracts;
-using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Domain.Model
 {
     public sealed class Graph
     {
-        private readonly HashSet<Node> _nodes = new HashSet<Node>();
+        private readonly HashSet<NodeReference> nodes = new HashSet<NodeReference>();
 
-        private readonly HashSet<Edge> _edges = new HashSet<Edge>();
+        private readonly HashSet<Edge> edges = new HashSet<Edge>();
 
-        private readonly IPathFinder _pathFinder;
+        private readonly IPathFinder pathFinder;
 
         internal Graph(
             string name,
             IPathFinder pathFinder)
         {
             if (name == null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
 
             if (pathFinder == null)
-            {
                 throw new ArgumentNullException(nameof(pathFinder));
-            }
 
             Name = name;
-            _pathFinder = pathFinder;
+            this.pathFinder = pathFinder;
         }
 
         public string Name { get; }
 
-        public IReadOnlyCollection<Node> Nodes => _nodes;
+        public IReadOnlyCollection<NodeReference> Nodes => nodes;
 
-        public IReadOnlyCollection<Edge> Edges => _edges;
+        public IReadOnlyCollection<Edge> Edges => edges;
 
-        public void AddNode(int id, string label)
+        public void AddNode(int nodeId)
         {
-            if (id <= 0)
-            {
-                throw new ModelValidationException("Node id must be greater than 0.");
-            }
-
-            if (label == null)
-            {
-                throw new ModelValidationException("Node label is required.");
-            }
-
-            if (label == string.Empty)
-            {
-                throw new ModelValidationException("Node label must not be empty.");
-            }
-
-            _nodes.Add(new Node(this, id, label));
+            nodes.Add(new NodeReference(Name, nodeId));
         }
 
-        public void AddEdge(Node startNode, Node endNode)
+        public void AddEdge(int startNodeId, int endNodeId)
         {
-            if (startNode == null)
-            {
-                throw new ArgumentNullException(nameof(startNode));
-            }
+            var startNodeReference = new NodeReference(Name, startNodeId);
+            var endNodeReference = new NodeReference(Name, endNodeId);
 
-            if (endNode == null)
-            {
-                throw new ArgumentNullException(nameof(endNode));
-            }
-
-            if (startNode.Graph != this)
-            {
-                throw new ModelValidationException("Invalid start node.");
-            }
-
-            if (endNode.Graph != this)
-            {
-                throw new ModelValidationException("Invalid end node.");
-            }
-
-            _edges.Add(new Edge(startNode, endNode));
+            edges.Add(new Edge(startNodeReference, endNodeReference));
         }
 
-        public Path GetPath(IEnumerable<Node> nodes)
-        {
-            if (nodes == null)
-            {
-                throw new ArgumentNullException(nameof(nodes));
-            }
-
-            if (!nodes.Any())
-            {
-                throw new ModelValidationException("A path must consist of at least one node.");
-            }
-
-            if (nodes.Any(n => n.Graph != this))
-            {
-                throw new ModelValidationException("Some of the nodes in the path are invalid.");
-            }
-
-            return new Path(nodes.ToList());
-        }
-
-        public Path GetShortestPath(Node startNode, Node endNode)
-        {
-            if (startNode == null)
-            {
-                throw new ArgumentNullException(nameof(startNode));
-            }
-
-            if (endNode == null)
-            {
-                throw new ArgumentNullException(nameof(endNode));
-            }
-
-            if (startNode.Graph != this)
-            {
-                throw new ModelValidationException("Invalid start node.");
-            }
-
-            if (endNode.Graph != this)
-            {
-                throw new ModelValidationException("Invalid end node.");
-            }
-
-            return _pathFinder.GetShortestPath(this, startNode, endNode);
-        }
+        public Path GetShortestPath(int startNodeId, int endNodeId)
+            => pathFinder.GetShortestPath(Name, startNodeId, endNodeId);
     }
 }

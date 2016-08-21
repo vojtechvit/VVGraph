@@ -1,0 +1,59 @@
+{
+	"variables": [],
+	"info": {
+		"name": "VV Graph",
+		"_postman_id": "263eba8a-b1aa-fb64-cfb3-6cd4d8f13de8",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PUT Graph",
+			"request": {
+				"url": "http://localhost:60832/api/v1/graphs/test1",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"test1\",\n    \"nodes\": [\n        { \"id\": 1, \"label\": \"Facebook\" },\n        { \"id\": 2, \"label\": \"Google\" },\n        { \"id\": 3, \"label\": \"Amazon\" },\n        { \"id\": 4, \"label\": \"Twitter\" },\n        { \"id\": 5, \"label\": \"LinkedIn\" },\n        { \"id\": 6, \"label\": \"Skype\" }\n    ],\n    \"edges\": [ \n        { \"startNodeId\": 1, \"endNodeId\": 2 },\n        { \"startNodeId\": 5, \"endNodeId\": 2 },\n        { \"startNodeId\": 2, \"endNodeId\": 5 },\n        { \"startNodeId\": 1, \"endNodeId\": 2 },\n        { \"startNodeId\": 2, \"endNodeId\": 3 },\n        { \"startNodeId\": 3, \"endNodeId\": 4 },\n        { \"startNodeId\": 4, \"endNodeId\": 5 },\n        { \"startNodeId\": 5, \"endNodeId\": 6 },\n        { \"startNodeId\": 4, \"endNodeId\": 2 }\n    ]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET Graph",
+			"request": {
+				"url": "http://localhost:60832/api/v1/graphs/test1",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET Shortest Path",
+			"request": {
+				"url": "http://localhost:60832/api/v1/graphs/test1/shortest-path?startNodeId=1&endNodeId=6",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

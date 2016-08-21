@@ -22,9 +22,9 @@ namespace DataLoader
                 .AddSingleton<IFileSystemGraphDeserializer, DirectoryGraphDeserializer>()
 
                 // Api Model Mappers
-                .AddSingleton<IGraphMapper, GraphMapper>()
-                .AddSingleton<INodeMapper, NodeMapper>()
-                .AddSingleton<IEdgeMapper, EdgeMapper>()
+                .AddSingleton<IApiModelGraphMapper, ApiModelGraphMapper>()
+                .AddSingleton<IApiModelNodeMapper, ApiModelNodeMapper>()
+                .AddSingleton<IApiModelEdgeMapper, ApiModelEdgeMapper>()
 
                 // Data Loader
                 .AddSingleton<IDataLoader, DataLoader>()

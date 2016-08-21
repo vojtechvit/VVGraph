@@ -4,10 +4,14 @@
   "dependencies": {
     "Domain": "1.0.0-*",
     "Microsoft.Extensions.Options": "1.0.0",
-    "Neo4j.Driver": "1.0.2"
+    "Neo4jClient": "2.0.0"
   },
 
   "frameworks": {
-    "net461": {}
+    "net461": {
+      "frameworkAssemblies": {
+        "System.Transactions": "4.0.0.0"
+      }
+    }
   }
 }

@@ -2,7 +2,7 @@
 
 namespace WebServices.ApiModel.Mappers.Contracts
 {
-    public interface IGraphMapper
+    public interface IApiModelGraphMapper
     {
         Domain.Model.Graph Map(Graph graph);
 

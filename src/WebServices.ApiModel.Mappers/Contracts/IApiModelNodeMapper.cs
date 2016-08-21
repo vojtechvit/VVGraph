@@ -2,7 +2,7 @@
 
 namespace WebServices.ApiModel.Mappers.Contracts
 {
-    public interface INodeMapper
+    public interface IApiModelNodeMapper
     {
         Node Map(Domain.Model.Node node);
     }

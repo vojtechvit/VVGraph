@@ -2,7 +2,7 @@
 
 namespace WebServices.ApiModel.Mappers
 {
-    public sealed class EdgeMapper : IEdgeMapper
+    public sealed class ApiModelEdgeMapper : IApiModelEdgeMapper
     {
         public Edge Map(Domain.Model.Edge edge)
             => new Edge

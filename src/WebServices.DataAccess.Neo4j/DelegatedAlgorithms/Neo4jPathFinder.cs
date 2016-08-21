@@ -1,33 +1,35 @@
 ﻿using Domain.Algorithms.Contracts;
 using Domain.Factories.Contracts;
 using Domain.Model;
+using Neo4jClient;
+using Neo4jClient.Cypher;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using WebServices.DataAccess.Neo4j.Contracts;
 
 namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
 {
     public sealed class Neo4jPathFinder : IPathFinder
     {
-        private readonly INeo4jDriver driver;
+        private readonly IGraphClient client;
         private readonly IPathFactory pathFactory;
 
         public Neo4jPathFinder(
-            INeo4jDriver driver,
+            IGraphClient client,
             IPathFactory pathFactory)
         {
-            if (driver == null)
-                throw new ArgumentNullException(nameof(driver));
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
 
             if (pathFactory == null)
                 throw new ArgumentNullException(nameof(pathFactory));
 
-            this.driver = driver;
+            this.client = client;
             this.pathFactory = pathFactory;
         }
 
-        public async Task<Path> FindShortestPathAsync(Graph graph, Node startNode, Node endNode)
+        public async Task<Path> FindShortestPathAsync(Graph graph, Domain.Model.Node startNode, Domain.Model.Node endNode)
         {
             if (graph == null)
                 throw new ArgumentNullException(nameof(graph));
@@ -40,11 +42,28 @@ namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
 
             var nodeIds = new List<int>();
 
-            using (var session = driver.Session())
+            var query = client
+                .Cypher
+                .Match("(g:Graph)<-[:PART_OF]-(sn:Node),(g:Graph)<-[:PART_OF]-(en:Node),p=shortestPath((sn)-[*]-(oliver))")
+                .Where((Model.Graph g) => g.Name == g.Name)
+                .AndWhere((Model.Node sn) => sn.Id == startNode.Id)
+                .AndWhere((Model.Node en) => en.Id == endNode.Id)
+                .AndWhere("ALL(r IN rels(p) WHERE type(r)=\"ADJACENT_TO\")")
+                .Return(() => new
+                {
+                    NodeIds = Return.As<IEnumerable<int>>("EXTRACT(n in nodes(p) | n.id)")
+                });
+
+            var results = await query.ResultsAsync;
+
+            var result = results.FirstOrDefault();
+
+            if (result == null)
             {
+                return null;
             }
 
-            return pathFactory.Create(graph.Nodes.Values);
+            return pathFactory.Create(result.NodeIds.Select(nid => graph.Nodes[nid]));
         }
     }
 }

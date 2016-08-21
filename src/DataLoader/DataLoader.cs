@@ -12,12 +12,12 @@ namespace DataLoader
     public class DataLoader : IDataLoader
     {
         private readonly IFileSystemGraphDeserializer graphDeserializer;
-        private readonly IGraphMapper graphMapper;
+        private readonly IApiModelGraphMapper graphMapper;
         private readonly IVVGraphClientFactory vvGraphClientFactory;
 
         public DataLoader(
             IFileSystemGraphDeserializer graphDeserializer,
-            IGraphMapper graphMapper,
+            IApiModelGraphMapper graphMapper,
             IVVGraphClientFactory vvGraphClientFactory)
         {
             if (graphDeserializer == null)

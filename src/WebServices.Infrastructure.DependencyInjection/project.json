@@ -1,9 +1,10 @@
-﻿{
+{
   "version": "1.0.0-*",
 
   "dependencies": {
     "Domain": "1.0.0-*",
     "Infrastructure.DependencyInjection": "1.0.0-*",
+    "Neo4jClient": "2.0.0",
     "WebServices.ApiModel.Mappers": "1.0.0-*",
     "WebServices.DataAccess.Neo4j": "1.0.0-*"
   },

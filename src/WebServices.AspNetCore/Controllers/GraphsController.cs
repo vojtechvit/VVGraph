@@ -12,11 +12,11 @@ namespace WebServices.AspNetCore.Controllers
     public class GraphsController : Controller
     {
         private readonly IGraphRepository graphRepository;
-        private readonly IGraphMapper graphMapper;
+        private readonly IApiModelGraphMapper graphMapper;
 
         public GraphsController(
             IGraphRepository graphRepository,
-            IGraphMapper graphMapper)
+            IApiModelGraphMapper graphMapper)
         {
             if (graphRepository == null)
                 throw new System.ArgumentNullException(nameof(graphRepository));

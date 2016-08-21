@@ -5,16 +5,16 @@ using WebServices.ApiModel.Mappers.Contracts;
 
 namespace WebServices.ApiModel.Mappers
 {
-    public sealed class GraphMapper : IGraphMapper
+    public sealed class ApiModelGraphMapper : IApiModelGraphMapper
     {
         private readonly IGraphFactory graphFactory;
-        private readonly INodeMapper nodeMapper;
-        private readonly IEdgeMapper edgeMapper;
+        private readonly IApiModelNodeMapper nodeMapper;
+        private readonly IApiModelEdgeMapper edgeMapper;
 
-        public GraphMapper(
+        public ApiModelGraphMapper(
             IGraphFactory graphFactory,
-            INodeMapper nodeMapper,
-            IEdgeMapper edgeMapper)
+            IApiModelNodeMapper nodeMapper,
+            IApiModelEdgeMapper edgeMapper)
         {
             if (graphFactory == null)
                 throw new ArgumentNullException(nameof(graphFactory));

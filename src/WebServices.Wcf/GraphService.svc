@@ -1,0 +1,5 @@
+﻿<%@ ServiceHost Language="C#"
+    Debug="true"
+    Service="WebServices.Wcf.GraphService"
+    Factory="WebServices.Wcf.DependencyInjection.DependencyInjectionServiceHostFactory"
+    CodeBehind="GraphService.svc.cs" %>

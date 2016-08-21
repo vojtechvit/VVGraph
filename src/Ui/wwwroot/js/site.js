@@ -23,6 +23,7 @@
                             $scope.edges = edgesToDataSet(data.edges);
                             $scope.network = createGraph($scope.nodes, $scope.edges);
                             attachEvents($scope.network);
+                            $scope.errorMessage = null;
                         })
                         .error(function (data) {
                             $scope.errorMessage = 'Could not load the graph information.';
@@ -49,6 +50,7 @@
                         $scope.network.unselectAll();
                         $scope.startNodeId = null;
                         $scope.endNodeId = null;
+                        $scope.errorMessage = null;
                     }, function (response) {
                         $scope.errorMessage = 'Could not load the load shortest path.';
                     });

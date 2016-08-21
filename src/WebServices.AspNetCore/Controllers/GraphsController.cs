@@ -1,6 +1,7 @@
 ﻿using Domain.Repositories.Contracts;
 using Domain.Validation;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using WebServices.ApiModel;
@@ -19,10 +20,10 @@ namespace WebServices.AspNetCore.Controllers
             IApiModelGraphMapper graphMapper)
         {
             if (graphRepository == null)
-                throw new System.ArgumentNullException(nameof(graphRepository));
+                throw new ArgumentNullException(nameof(graphRepository));
 
             if (graphMapper == null)
-                throw new System.ArgumentNullException(nameof(graphMapper));
+                throw new ArgumentNullException(nameof(graphMapper));
 
             this.graphRepository = graphRepository;
             this.graphMapper = graphMapper;
@@ -73,19 +74,11 @@ namespace WebServices.AspNetCore.Controllers
             }
         }
 
-        // GET api/v1/graphs/{graphName}/shortest-path?fromNodeId={fromNodeId}&toNodeId={toNodeId}
+        // GET api/v1/graphs/{graphName}/shortest-path?startNodeId={startNodeId}&endNodeId={endNodeId}
         [HttpGet("{graphName}/shortest-path")]
-        public async Task<IActionResult> ShortestPathAsync(string graphName)
+        public async Task<IActionResult> ShortestPathAsync(string graphName, int? startNodeId, int? endNodeId)
         {
-            int startNodeId;
-            int endNodeId;
-
-            const string startNodeIdParameterName = "startNodeId";
-            const string endNodeIdParameterName = "endNodeId";
-
-            if (graphName == null
-                || !Request.Query.ContainsKey(startNodeIdParameterName) || !int.TryParse(Request.Query[startNodeIdParameterName], out startNodeId)
-                || !Request.Query.ContainsKey(endNodeIdParameterName) || !int.TryParse(Request.Query[endNodeIdParameterName], out endNodeId))
+            if (graphName == null || !startNodeId.HasValue || !endNodeId.HasValue)
             {
                 return NotFound();
             }
@@ -97,7 +90,9 @@ namespace WebServices.AspNetCore.Controllers
                 return NotFound();
             }
 
-            var shortestPath = await graph.FindShortestPathAsync(graph.Nodes[startNodeId], graph.Nodes[endNodeId]);
+            var shortestPath = await graph.FindShortestPathAsync(
+                graph.Nodes[startNodeId.Value],
+                graph.Nodes[endNodeId.Value]);
 
             if (shortestPath == null)
             {

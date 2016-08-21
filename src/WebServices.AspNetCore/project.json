@@ -11,9 +11,10 @@
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
     "Domain": "1.0.0-*",
-    "Infrastructure.DependencyInjection": "1.0.0-*",
     "WebServices.ApiModel": "1.0.0-*",
-    "WebServices.ApiModel.Mappers": "1.0.0-*"
+    "WebServices.ApiModel.Mappers": "1.0.0-*",
+    "WebServices.Infrastructure.DependencyInjection": "1.0.0-*",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0"
   },
 
   "tools": {

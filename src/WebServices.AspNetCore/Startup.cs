@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WebServices.DataAccess.Neo4j;
+using WebServices.Infrastructure.DependencyInjection;
 
 namespace WebServices.AspNetCore
 {
@@ -23,7 +25,8 @@ namespace WebServices.AspNetCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddVVGraphCommon();
+            services.AddVVGraphWebServicesCommon();
+            services.AddSingleton(new Neo4jConfiguration { Uri = Configuration.GetConnectionString("Neo4j") });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -31,6 +34,7 @@ namespace WebServices.AspNetCore
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseDeveloperExceptionPage();
             app.UseMvc();
         }
     }

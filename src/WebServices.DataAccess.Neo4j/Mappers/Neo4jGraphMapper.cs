@@ -1,8 +1,10 @@
 ﻿using Domain.Factories.Contracts;
+using Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebServices.DataAccess.Neo4j.Mappers.Contracts;
+using WebServices.DataAccess.Neo4j.Model;
 
 namespace WebServices.DataAccess.Neo4j.Mappers
 {
@@ -59,6 +61,14 @@ namespace WebServices.DataAccess.Neo4j.Mappers
                 throw new ArgumentNullException(nameof(graph));
 
             return graph.Nodes.Values.Select(n => new Model.Node { Id = n.Id, Label = n.Label });
+        }
+
+        public IEnumerable<Model.Edge> MapEdges(Domain.Model.Graph graph)
+        {
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+
+            return graph.Edges.Select(e => new Model.Edge { StartNodeId = e.StartNode.Id, EndNodeId = e.EndNode.Id });
         }
     }
 }

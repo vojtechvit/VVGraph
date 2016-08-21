@@ -30,11 +30,16 @@ namespace WebServices.AspNetCore.Controllers
 
         // GET api/v1/graphs/{graphName}
         [HttpGet("{graphName}")]
-        public async Task<Graph> GetAsync(string graphName)
+        public async Task<IActionResult> GetAsync(string graphName)
         {
             var graph = await graphRepository.GetAsync(graphName);
 
-            return graphMapper.Map(graph);
+            if (graph == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(graphMapper.Map(graph));
         }
 
         // PUT api/v1/graphs/{graphName}
@@ -84,6 +89,12 @@ namespace WebServices.AspNetCore.Controllers
             }
 
             var graph = await graphRepository.GetAsync(graphName);
+
+            if (graph == null)
+            {
+                return NotFound();
+            }
+
             var shortestPath = await graph.FindShortestPathAsync(graph.Nodes[startNodeId], graph.Nodes[endNodeId]);
 
             if (shortestPath == null)

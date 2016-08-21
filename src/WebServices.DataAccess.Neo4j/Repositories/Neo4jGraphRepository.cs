@@ -38,87 +38,85 @@ namespace WebServices.DataAccess.Neo4j.Repositories
             this.graphMapper = graphMapper;
         }
 
-        public async Task<bool> ExistsAsync(string name)
-        {
-            var query = client
-                .Cypher
-                .Match("(graph:Graph)")
-                .Where((Graph graph) => graph.Name == name)
-                .Return<int>("1");
-
-            var results = await query.ResultsAsync;
-
-            return results.Any();
-        }
-
         public async Task<Graph> GetAsync(string name)
         {
-            var query = client
-             .Cypher
-             .Match("(:Graph)<-[:PART_OF]-(node:Node)-[edge:ADJACENT_TO]->(:Node)")
-             .Where((Graph graph) => graph.Name == name)
-             .Return((graph, node, edge) => new
-             {
-                 Graph = graph.As<Model.Graph>(),
-                 Nodes = node.CollectAs<Model.Node>(),
-                 Edges = edge.CollectAs<Model.Edge>()
-             });
+            var graphAndNodes = (await client
+                .Cypher
+                .Match("(graph:Graph)<-[:PART_OF]-(node:Node)")
+                .Where((Graph graph) => graph.Name == name)
+                .Return((graph, node, edge) => new
+                {
+                    Graph = graph.As<Model.Graph>(),
+                    Nodes = node.CollectAs<Model.Node>()
+                })
+                .Limit(1)
+                .ResultsAsync)
+                .FirstOrDefault();
 
-            var results = await query.ResultsAsync;
-
-            var firstResult = results.FirstOrDefault();
-
-            if (firstResult == null)
+            if (graphAndNodes == null)
             {
                 return null;
             }
 
-            return graphMapper.Map(firstResult.Graph, firstResult.Nodes, firstResult.Edges);
+            var edges = await client
+                .Cypher
+                .Match("(graph:Graph)<-[:PART_OF]-(n1:Node)-[:ADJACENT_TO]->(n2:Node)")
+                .Where((Graph graph) => graph.Name == name)
+                .Return((n1, n2) => new Model.Edge
+                {
+                    StartNodeId = n1.As<Model.Node>().Id,
+                    EndNodeId = n2.As<Model.Node>().Id
+                })
+                .ResultsAsync;
+
+            return graphMapper.Map(graphAndNodes.Graph, graphAndNodes.Nodes, edges);
         }
 
         public async Task CreateAsync(Graph graph)
         {
             var dbGraph = graphMapper.MapGraph(graph);
             var dbNodes = graphMapper.MapNodes(graph);
+            var dbEdges = graphMapper.MapEdges(graph);
 
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                await client
-                    .Cypher
-                    .Create("(graph:Graph {properties})")
-                    .WithParam("properties", dbGraph)
-                    .ExecuteWithoutResultsAsync();
+            //// Pending issue with authorization inside transaction - a bug in Neo4jClient.
+            //// A workaround exists, but not applied.
+            //// see http://stackoverflow.com/questions/31519633/neo4jclient-transactions-auth-error-on-transaction-completion
+            //// using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            //// {
+            // Create graph and its nodes
+            await client
+                .Cypher
+                .WithParam("properties", dbGraph)
+                .Create("(g:Graph {properties})")
+                .With("g")
+                .Unwind(dbNodes, "node")
+                .Create("(n:Node)-[:PART_OF]->(g)")
+                .Set("n = node")
+                .ExecuteWithoutResultsAsync();
 
-                await client
-                    .Cypher
-                    .Match("(graph:Graph)")
-                    .Where((Graph g) => g.Name == dbGraph.Name)
-                    .Unwind(dbNodes, "properties")
-                    .CreateUnique("(node:Node {properties})-[:PART_OF]->(graph:Graph)")
-                    .ExecuteWithoutResultsAsync();
+            // Add edges to the nodes of the graph
+            await client
+                .Cypher
+                .Unwind(dbEdges, "edge")
+                .Match("(g:Graph)<-[:PART_OF]-(node1:Node)",
+                    "(g:Graph)<-[:PART_OF]-(node2:Node)")
+                .Where((Model.Graph g) => g.Name == dbGraph.Name)
+                .AndWhere((Model.Node node1, Model.Edge edge) => node1.Id == edge.StartNodeId)
+                .AndWhere((Model.Node node2, Model.Edge edge) => node2.Id == edge.EndNodeId)
+                .CreateUnique("(node1)-[:ADJACENT_TO]->(node2)")
+                .ExecuteWithoutResultsAsync();
 
-                foreach (var edge in graph.Edges)
-                {
-                    await client
-                        .Cypher
-                        .Match("(node1:Node)", "(node2:Node)")
-                        .Where((Node node1) => node1.Id == edge.StartNode.Id)
-                        .AndWhere((Node node2) => node2.Id == edge.EndNode.Id)
-                        .CreateUnique("node1-[:ADJACENT_TO]->node1")
-                        .ExecuteWithoutResultsAsync();
-                }
-
-                scope.Complete();
-            }
+            ////     scope.Complete();
+            //// }
         }
 
         public async Task DeleteAsync(string name)
         {
             await client
                 .Cypher
-                .OptionalMatch("(graph:Graph)<-[:ADJACENT_TO]-(node:Node)")
+                .OptionalMatch("(graph:Graph)<-[*0..1]-(x)")
                 .Where((Graph graph) => graph.Name == name)
-                .DetachDelete("graph, node")
+                .DetachDelete("x")
                 .ExecuteWithoutResultsAsync();
         }
     }

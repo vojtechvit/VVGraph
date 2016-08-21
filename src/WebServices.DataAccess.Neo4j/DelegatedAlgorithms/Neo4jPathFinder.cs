@@ -42,21 +42,20 @@ namespace WebServices.DataAccess.Neo4j.DelegatedAlgorithms
 
             var nodeIds = new List<int>();
 
-            var query = client
+            var result = (await client
                 .Cypher
-                .Match("(g:Graph)<-[:PART_OF]-(sn:Node),(g:Graph)<-[:PART_OF]-(en:Node),p=shortestPath((sn)-[*]-(oliver))")
-                .Where((Model.Graph g) => g.Name == g.Name)
+                .Match("(g:Graph)<-[:PART_OF]-(sn:Node)",
+                    "p=shortestPath((sn)-[:ADJACENT_TO*]-(en:Node))")
+                .Where((Model.Graph g) => g.Name == graph.Name)
                 .AndWhere((Model.Node sn) => sn.Id == startNode.Id)
                 .AndWhere((Model.Node en) => en.Id == endNode.Id)
-                .AndWhere("ALL(r IN rels(p) WHERE type(r)=\"ADJACENT_TO\")")
                 .Return(() => new
                 {
                     NodeIds = Return.As<IEnumerable<int>>("EXTRACT(n in nodes(p) | n.id)")
-                });
-
-            var results = await query.ResultsAsync;
-
-            var result = results.FirstOrDefault();
+                })
+                .Limit(1)
+                .ResultsAsync)
+                .FirstOrDefault();
 
             if (result == null)
             {

@@ -10,5 +10,7 @@ namespace WebServices.DataAccess.Neo4j.Mappers.Contracts
         Graph MapGraph(Domain.Model.Graph graph);
 
         IEnumerable<Node> MapNodes(Domain.Model.Graph graph);
+
+        IEnumerable<Edge> MapEdges(Domain.Model.Graph graph);
     }
 }

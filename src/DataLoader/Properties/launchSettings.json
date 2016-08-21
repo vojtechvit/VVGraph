@@ -2,7 +2,7 @@
   "profiles": {
     "DataLoader": {
       "commandName": "Project",
-      "commandLineArgs": "load-graph test1 -dir \"C:\\src\\repos\\NetCodeChallenge\\Input data\" -url \"http://localhost:60832/api/v1/\""
+      "commandLineArgs": "load-graph test2 -dir \"C:\\src\\repos\\NetCodeChallenge\\Input data\" -url \"http://localhost:60832/api/v1/\""
     }
   }
 }

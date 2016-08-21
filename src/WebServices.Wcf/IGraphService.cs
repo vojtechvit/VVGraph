@@ -18,7 +18,7 @@ namespace WebServices.Wcf
 
         // PUT api/v1/graphs/{graphName}
         [OperationContract]
-        [WebInvoke(Method = "PUT", UriTemplate = "graphs/{graphName}/shortest-path", RequestFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "PUT", UriTemplate = "graphs/{graphName}", RequestFormat = WebMessageFormat.Json)]
         Task<Message> PutAsync(string graphName, Graph graph);
 
         // GET api/v1/graphs/{graphName}/shortest-path?startNodeId={startNodeId}&endNodeId={endNodeId}

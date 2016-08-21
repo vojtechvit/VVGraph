@@ -6,11 +6,11 @@ namespace WebServices.ApiModel
     [DataContract]
     public sealed class Edge
     {
-        [DataMember]
+        [DataMember(Name = "startNodeId")]
         [Required]
         public int StartNodeId { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "endNodeId")]
         [Required]
         public int EndNodeId { get; set; }
     }

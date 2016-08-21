@@ -6,11 +6,11 @@ namespace WebServices.ApiModel
     [DataContract]
     public sealed class Node
     {
-        [DataMember]
+        [DataMember(Name = "id")]
         [Required]
         public int Id { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "label")]
         [Required]
         public string Label { get; set; }
     }

@@ -7,14 +7,14 @@ namespace WebServices.ApiModel
     [DataContract]
     public sealed class Graph
     {
-        [DataMember]
+        [DataMember(Name = "name")]
         [Required]
         public string Name { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "nodes")]
         public IEnumerable<Node> Nodes { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "edges")]
         public IEnumerable<Edge> Edges { get; set; }
     }
 }

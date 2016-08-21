@@ -15,14 +15,16 @@
   - Project `WebServices.Wcf` will fail initially because it doesn't reference the other projects by a project reference; instead, it references the dlls. Project reference doesn't seem to work in this tooling preview. On the second run it should succeed.
 4. Run your neo4j Community Edition. Enter the web-based administration. Note your username and password.
 5. To run ASP.NET Core version of web services:
-  1. Right-click the project named `WebServices.AspNetCore`, set it as a startup project.
-  2. Hit `[ctrl]+[f5]`.
-  3. Note your service base URL, e.g. `http://localhost:60832/api/v1/`.
+  1. Make sure that the neo4j URI (including credentials) in `WebServices.AspNetCore` project's `appsettings.json` is correct.
+  2. Right-click the project named `WebServices.AspNetCore`, set it as a startup project.
+  3. Hit `[ctrl]+[f5]`.
+  4. Note your service base URL, e.g. `http://localhost:60832/api/v1/`.
   - Alternatively, you may just run in the project folder in the command line a command `dotnet run`.
 6. To run WCF version of web services:
-  1. Right-click the project named `WebServices.Wcf`, set it as a startup project.
-  2. Hit `[ctrl]+[f5]`. Ignore the window with a WCF client that opens.
-  3. Note your service base URL, e.g. `http://localhost:62017/GraphService.svc/`.
+  1. Make sure that the neo4j URI (including credentials) in `WebServices.Wcf` project's `Web.config` is correct.
+  2. Right-click the project named `WebServices.Wcf`, set it as a startup project.
+  3. Hit `[ctrl]+[f5]`. Ignore the window with a WCF client that opens.
+  4. Note your service base URL, e.g. `http://localhost:62017/GraphService.svc/`.
 7. To run data loader:
   1. Right-click the project named `DataLoader` and Publish it.
   2. Go to the folder to which the data loader was publisher.

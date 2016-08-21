@@ -1,8 +1,36 @@
 ﻿@{
     ViewData["Title"] = "VV Graph";
-    ViewData["IsNgApp"] = true;
 }
+<div class="jumbotron">
+    <div class="container">
+        <h1>VV Graph</h1>
+        <p>A graph-visualizing and processing sample application.</p>
+    </div>
+</div>
 
-<h1>Directives</h1>
-{{2+2}}
-<script src="~/lib/angular/angular.js"></script>
+<div class="container" ng-controller="HomeController as home">
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>{{home.graph.name}}</h2>
+        </div>
+    </div>
+    <div class="row" ng-show="home.errorMessage != null">
+        <div class="col-xs-12">
+            <p class="danger">{{home.errorMessage}}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="graph-container"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <form ng-submit="home.findShortestPath()">
+                <button type="submit" ng-disabled="!home.canFindShortestPath" class="btn btn-default" id="find-shortest-path">
+                    Find Shortest Path
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -60,6 +60,8 @@ namespace WebServices.AspNetCore.Controllers
 
                 var domainGraph = graphMapper.Map(graph);
 
+                // There could have been an extra Application layer that would
+                // wrap this into a single operation, possibly even within a transaction.
                 await graphRepository.DeleteAsync(domainGraph.Name);
                 await graphRepository.CreateAsync(domainGraph);
 

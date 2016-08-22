@@ -33,4 +33,5 @@
 8. To run the UI:
   1. Right-click the project named `Ui`, set it as a startup project.
   2. Hit `[ctrl]+[f5]`.
+  3. Use the Graph URL input field to display your graph. The URL should follow this template: `{base-URL}/graphs/{graph-name}`. The web service on the `base-URL` must be running.
   - To select multiple nodes, use [ctrl] or a long-click.

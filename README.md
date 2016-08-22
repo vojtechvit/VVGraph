@@ -22,6 +22,7 @@ The application demonstrates the use of the following concepts and technologies 
   - Make sure you uninstall all .NET Core, .NET CLI or DNX-related previews first!
 3. [neo4j](https://neo4j.com/) graph database.
 
+### Steps
 
 1. **Clone the repository** to a local folder: `https://github.com/vojtechvit/VVGraph.git`
 2. **Open the solution** in Visual Studio 2015 Update 3

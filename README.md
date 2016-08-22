@@ -6,7 +6,7 @@ The application demonstrates the use of the following concepts and technologies 
 
 1. **Domain Driven Design**
 2. **.NET Core project system** targeting full .NET Framework 4.6.1.
-3. **neo4j** graph database to store graphs and to run graph-native queries like finding the shortest path.
+3. **Neo4j** graph database to store graphs and to run graph-native queries like finding the shortest path.
 4. **ASP.NET Core REST API** to get/store graphs and to find shortest path.
   - and, for comparison, the same API implemented in **WCF HTTP Services**.
 5. **.NET Core console application** with smart command interface to load graph data stored in files into the API.
@@ -20,7 +20,7 @@ The application demonstrates the use of the following concepts and technologies 
 1. [Visual Studio 2015 Update 3](https://www.visualstudio.com/en-us/news/releasenotes/vs2015-update3-vs)
 2. [.NET Core SDK and .NET Core 1.0.0 VS 2015 Tooling Preview 2](https://www.microsoft.com/net/core#windows)
   - Make sure you uninstall all .NET Core, .NET CLI or DNX-related previews first!
-3. [neo4j](https://neo4j.com/) graph database.
+3. [Neo4j Community Edition](https://neo4j.com/download/)
 
 ### Steps
 
@@ -28,9 +28,9 @@ The application demonstrates the use of the following concepts and technologies 
 2. **Open the solution** in Visual Studio 2015 Update 3
 3. **Build the solution**.
   - Project `WebServices.Wcf` will fail initially because it doesn't reference the other projects by a project reference; instead, it references the dlls. Project reference doesn't seem to work in this tooling preview. On the second run it should succeed.
-4. **Start neo4j** Community Edition. Enter the web-based administration. Note your username and password.
+4. **Start Neo4j** Community Edition. Enter the web-based administration. Note your username and password.
 5. **Run ASP.NET Core REST API**:
-  1. Make sure that the neo4j URI (including credentials) in `WebServices.AspNetCore` project's `appsettings.json` is correct.
+  1. Make sure that the Neo4j URI (including credentials) in `WebServices.AspNetCore` project's `appsettings.json` is correct.
   2. Right-click the project named `WebServices.AspNetCore`, set it as a startup project.
   3. Hit `[ctrl]+[f5]`.
   4. Note your service base URL, e.g. `http://localhost:60832/api/v1/`.
@@ -38,7 +38,7 @@ The application demonstrates the use of the following concepts and technologies 
   - Alternatively, you may just run the command `dotnet run` in the project folder.
   - You may test the API using the Postman collection in `samples/postman` folder.
 6. _Run WCF HTTP Services_:
-  1. Make sure that the neo4j URI (including credentials) in `WebServices.Wcf` project's `Web.config` is correct.
+  1. Make sure that the Neo4j URI (including credentials) in `WebServices.Wcf` project's `Web.config` is correct.
   2. Right-click the project named `WebServices.Wcf`, set it as a startup project.
   3. Hit `[ctrl]+[f5]`.
   4. Note your service base URL, e.g. `http://localhost:62017/GraphService.svc/`.
@@ -52,7 +52,7 @@ The application demonstrates the use of the following concepts and technologies 
   
   - Alternatively, you may just run the command `dotnet run dataloader load-graph {graphName} -dir {input-files-directory} -url {web-service-base-url}` in the project folder.
   - You may use sample data in the `samples/input-data` folder.
-  - You may check in neo4j web administration that a new graph was added.
+  - You may check in Neo4j web administration that a new graph was added.
 8. **Run ASP.NET Core single-page application**:
   1. Right-click the project named `Ui`, set it as a startup project.
   2. Hit `[ctrl]+[f5]`.

@@ -29,26 +29,31 @@ The application demonstrates the use of the following concepts and technologies 
 3. **Build the solution**.
   - Project `WebServices.Wcf` will fail initially because it doesn't reference the other projects by a project reference; instead, it references the dlls. Project reference doesn't seem to work in this tooling preview. On the second run it should succeed.
 4. **Start neo4j** Community Edition. Enter the web-based administration. Note your username and password.
-5. **Run ASP.NET Core API**:
+5. **Run ASP.NET Core REST API**:
   1. Make sure that the neo4j URI (including credentials) in `WebServices.AspNetCore` project's `appsettings.json` is correct.
   2. Right-click the project named `WebServices.AspNetCore`, set it as a startup project.
   3. Hit `[ctrl]+[f5]`.
   4. Note your service base URL, e.g. `http://localhost:60832/api/v1/`.
   
   - Alternatively, you may just run the command `dotnet run` in the project folder.
+  - You may test the API using the Postman collection in `samples/postman` folder.
 6. _Run WCF HTTP Services_:
   1. Make sure that the neo4j URI (including credentials) in `WebServices.Wcf` project's `Web.config` is correct.
   2. Right-click the project named `WebServices.Wcf`, set it as a startup project.
-  3. Hit `[ctrl]+[f5]`. Ignore the window with a WCF client that opens.
+  3. Hit `[ctrl]+[f5]`.
   4. Note your service base URL, e.g. `http://localhost:62017/GraphService.svc/`.
-7. **Run data loader**:
+  
+  - Ignore the WCF client window that probably opens.
+  - You may test the API using the Postman collection in `samples/postman` folder.
+7. **Run Data Loader** console application:
   1. Right-click the project named `DataLoader` and Publish it.
   2. Go to the folder to which the data loader was publisher.
   3. Open Command Line and run `dataloader load-graph {graphName} -dir {input-files-directory} -url {web-services-base-url}`.
   
-  - You can check in neo4j web administration that a new graph was added.
   - Alternatively, you may just run the command `dotnet run dataloader load-graph {graphName} -dir {input-files-directory} -url {web-service-base-url}` in the project folder.
-8. **Run the UI**:
+  - You may use sample data in the `samples/input-data` folder.
+  - You may check in neo4j web administration that a new graph was added.
+8. **Run ASP.NET Core single-page application**:
   1. Right-click the project named `Ui`, set it as a startup project.
   2. Hit `[ctrl]+[f5]`.
   3. Use the Graph URL input field to display your graph. The URL should follow this template: `{web-service-base-url}/graphs/{graph-name}`. The web service on the `{web-service-base-url}` must be running.

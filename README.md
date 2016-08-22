@@ -11,7 +11,7 @@ The application demonstrates the use of the following concepts and technologies 
   - and, for comparison, the same API implemented in **WCF HTTP Services**.
 5. **.NET Core console application** with smart command interface to load graph data stored in files into the API.
 7. **REST API C# proxy** that can be distributed as a NuGet package.
-8. **ASP.NET Core Single-Page Application** build with **AngularJS** and **vis.js** to visualize graphs and to look for shortest paths using the REST API. All packages are imported using **bower**.
+8. **ASP.NET Core single-page application** build with **AngularJS** and **vis.js** to visualize graphs and to look for shortest paths using the REST API. All packages are imported using **bower**.
 
 ## How to run
 

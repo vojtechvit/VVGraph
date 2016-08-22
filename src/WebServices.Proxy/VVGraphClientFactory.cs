@@ -7,6 +7,7 @@ namespace WebServices.Proxy
     {
         private readonly IHttpClient httpClient;
         private readonly IJsonSerializer jsonSerializer;
+        private readonly IUrlHelper urlHelper;
 
         public VVGraphClientFactory(
             IHttpClient httpClient,
@@ -18,11 +19,15 @@ namespace WebServices.Proxy
             if (jsonSerializer == null)
                 throw new ArgumentNullException(nameof(jsonSerializer));
 
+            if (urlHelper == null)
+                throw new ArgumentNullException(nameof(urlHelper));
+
             this.httpClient = httpClient;
             this.jsonSerializer = jsonSerializer;
+            this.urlHelper = urlHelper;
         }
 
         public IVVGraphClient Create(VVGraphClientConfiguration configuration)
-            => new VVGraphClient(configuration, httpClient, jsonSerializer);
+            => new VVGraphClient(configuration, httpClient, jsonSerializer, urlHelper);
     }
 }

@@ -9,6 +9,7 @@ namespace WebServices.Proxy.DependencyInjection
             => services
                 .AddSingleton<IVVGraphClientFactory, VVGraphClientFactory>()
                 .AddSingleton<IJsonSerializer, JsonSerializerAdapter>()
+                .AddSingleton<IUrlHelper, UrlHelper>()
                 .AddSingleton<IHttpClient, HttpClientAdapter>();
     }
 }

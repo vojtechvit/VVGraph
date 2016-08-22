@@ -14,13 +14,15 @@ namespace WebServices.Proxy
         private readonly VVGraphClientConfiguration configuration;
         private readonly IHttpClient httpClient;
         private readonly IJsonSerializer jsonSerializer;
+        private readonly IUrlHelper urlHelper;
 
         private bool disposed;
 
         public VVGraphClient(
             VVGraphClientConfiguration configuration,
             IHttpClient httpClient,
-            IJsonSerializer jsonSerializer)
+            IJsonSerializer jsonSerializer,
+            IUrlHelper urlHelper)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -28,9 +30,13 @@ namespace WebServices.Proxy
             if (jsonSerializer == null)
                 throw new ArgumentNullException(nameof(jsonSerializer));
 
+            if (urlHelper == null)
+                throw new ArgumentNullException(nameof(urlHelper));
+
             this.httpClient = httpClient;
             this.configuration = configuration;
             this.jsonSerializer = jsonSerializer;
+            this.urlHelper = urlHelper;
         }
 
         public async Task PutGraphAsync(Graph graph, CancellationToken cancellationToken)
@@ -40,11 +46,15 @@ namespace WebServices.Proxy
 
             try
             {
-                var graphUrl = GetGraphUrl(graph.Name);
+                var graphUrl = urlHelper.GetGraphUrl(configuration.BaseUrl, graph.Name);
 
                 var body = jsonSerializer.Serialize(graph);
 
                 await httpClient.PutAsync(graphUrl, body, Encoding.UTF8, JsonMimeType, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                throw;
             }
             catch (Exception exception)
             {
@@ -62,8 +72,5 @@ namespace WebServices.Proxy
                 disposed = true;
             }
         }
-
-        private Uri GetGraphUrl(string graphName)
-            => new Uri(configuration.BaseUrl, $"graphs/{graphName}");
     }
 }

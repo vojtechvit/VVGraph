@@ -17,7 +17,7 @@ The application demonstrates the use of the following concepts and technologies 
 
 ### Requirements
 
-1. [Visual Studio 2015 Update 3](https://go.microsoft.com/fwlink/?LinkId=691129)
+1. [Visual Studio 2015 Update 3](https://www.visualstudio.com/en-us/news/releasenotes/vs2015-update3-vs)
 2. [.NET Core SDK and .NET Core 1.0.0 VS 2015 Tooling Preview 2](https://www.microsoft.com/net/core#windows)
   - Make sure you uninstall all .NET Core, .NET CLI or DNX-related previews first!
 3. [neo4j](https://neo4j.com/) graph database.

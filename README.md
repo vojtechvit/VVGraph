@@ -1,13 +1,27 @@
 # VV Graph
 
-## Requirements
+VV Graph is a solution that contains tools, web services and web UI that together form an application which allows users to store and visualize graphs and to find shortest paths between selected nodes.
+
+The application demonstrates the use of the following concepts and technologies in **C# 6** and **.NET Framework 4.6.1**:
+
+1. **Domain Driven Design**
+2. The new **.NET Core project** system targeting full .NET Framework 4.6.1.
+3. **neo4j** graph database to store graphs and to run graph-native queries like finding the shortest path.
+4. **ASP.NET Core** RESTful API to get/store graphs and to find shortest path.
+  - and, for comparison, the same API implemented in **WCF HTTP Services**.
+5. **.NET Core console application** with smart command interface to load graph data stored in files into the API.
+7. **REST API C# proxy** that can be distributed as a NuGet package.
+8. **ASP.NET Core single-page application** build with **AngularJS** and **vis.js** to visualize graphs and to look for shortest paths using the REST API.
+
+## How to run
+
+### Requirements
 
 1. [Visual Studio 2015 Update 3](https://go.microsoft.com/fwlink/?LinkId=691129)
 2. [.NET Core SDK and .NET Core 1.0.0 VS 2015 Tooling Preview 2](https://www.microsoft.com/net/core#windows)
   - Make sure you uninstall all .NET Core, .NET CLI or DNX-related previews first!
 3. [neo4j](https://neo4j.com/) graph database.
 
-## How to run
 
 1. Clone the repository to a local folder: `https://github.com/vojtechvit/VVGraph.git`
 2. Open the solution in Visual Studio 2015 Update 3

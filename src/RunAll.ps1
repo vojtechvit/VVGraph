@@ -12,8 +12,10 @@ Push-Location $PSScriptRoot
 
 dotnet restore
 
-$aspNetCoreApiJob = Start-Job -Name $aspNetCoreApiJobName -ArgumentList $PSScriptRoot -ScriptBlock { Param($scriptRoot) Set-Location "$scriptRoot\WebServices.AspNetCore"; dotnet run }
-$aspNetCoreUiJob = Start-Job -Name $aspNetCoreUiJobName -ArgumentList $PSScriptRoot -ScriptBlock { Param($scriptRoot) Set-Location "$scriptRoot\Ui"; dotnet run }
+$runNetCoreApp = { Param($folder) Set-Location $folder; dotnet run }
+
+$aspNetCoreApiJob = Start-Job -Name $aspNetCoreApiJobName -ScriptBlock $runNetCoreApp -ArgumentList "$PSScriptRoot\WebServices.AspNetCore"
+$aspNetCoreUiJob = Start-Job -Name $aspNetCoreUiJobName -ScriptBlock $runNetCoreApp -ArgumentList "$PSScriptRoot\Ui"
 
 do 
 {

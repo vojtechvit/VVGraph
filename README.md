@@ -26,8 +26,8 @@ The application demonstrates the use of the following concepts and technologies 
 
 1. **Clone the repository** to a local folder: https://github.com/vojtechvit/VVGraph.git
 2. **Start Neo4j** Community Edition. 
-  - You may open the  Neo4j web administration to see the changes there, but *do not change the password!*
-2. Run the PowerShell script in `src\RunAll.ps1`
+3. **Open Neo4j web administration and change password to pass123**.
+4. **Run PowerShell script `src\RunAll.ps1`**
   - [x] The ASP.NET Core single-page application starts on URL: [http://localhost:5000/](http://localhost:5000/)
     - Use the Graph URL input field to display your graph. The URL should follow this template:<br/>
       `{web-service-base-url}/graphs/{graph-name}`.

@@ -11,7 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/v1/graphs",
+      "launchUrl": "api/v1/graphs/test1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -19,7 +19,7 @@
     "WebServices.AspNetCore": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5000/api/values",
+      "launchUrl": "http://localhost:5001/api/v1/graphs/test1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

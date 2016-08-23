@@ -18,16 +18,14 @@ $aspNetCoreUiJob = Start-Job -Name $aspNetCoreUiJobName -ArgumentList $PSScriptR
 do 
 {
     $aspNetCoreApiJob | Receive-Job | Tee-Object -Variable "jobOutput" | Out-Default
-    Write-Output $jobOutput
     Start-Sleep -Milliseconds 500
-} while ([string]$jobOutput -notmatch 'Now listening on: ([^ ]+)')
+} while ($jobOutput -notmatch 'Now listening on: ([^ ]+)')
 
 do 
 {
     $aspNetCoreUiJob | Receive-Job | Tee-Object -Variable "jobOutput" | Out-Default
-    Write-Output $jobOutput
     Start-Sleep -Milliseconds 500
-} while ([string]$jobOutput -notmatch 'Now listening on: ([^ ]+)')
+} while ($jobOutput -notmatch 'Now listening on: ([^ ]+)')
 
 Push-Location DataLoader
 

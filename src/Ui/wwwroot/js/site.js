@@ -9,7 +9,7 @@
                 $scope.errorMessage = null;
 
                 // Graph
-                $scope.graphUrl = 'http://localhost:60832/api/v1/graphs/test1';
+                $scope.graphUrl = 'http://localhost:5001/api/v1/graphs/test1';
                 $scope.graphName = null;
                 $scope.nodes = null;
                 $scope.edges = null;

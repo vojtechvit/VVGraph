@@ -11,7 +11,8 @@ namespace WebServices.Proxy
 
         public VVGraphClientFactory(
             IHttpClient httpClient,
-            IJsonSerializer jsonSerializer)
+            IJsonSerializer jsonSerializer,
+            IUrlHelper urlHelper)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));

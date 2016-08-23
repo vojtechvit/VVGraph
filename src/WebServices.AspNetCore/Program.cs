@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Builder;
+using System.IO;
 
 namespace WebServices.AspNetCore
 {
@@ -10,6 +10,7 @@ namespace WebServices.AspNetCore
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
+                .UseUrls("http://localhost:5001/")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()

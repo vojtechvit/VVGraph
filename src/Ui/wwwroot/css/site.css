@@ -1,4 +1,8 @@
-﻿#graph-container {
+﻿[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+#graph-container {
     width: 100%;
     height: 500px;
     border: 1px solid lightgray;

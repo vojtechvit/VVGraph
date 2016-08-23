@@ -21,13 +21,13 @@ do
 {
     $aspNetCoreApiJob | Receive-Job | Tee-Object -Variable "jobOutput" | Out-Default
     Start-Sleep -Milliseconds 500
-} while ($jobOutput -notmatch 'Now listening on: ([^ ]+)')
+} while ([string]$jobOutput -notmatch 'Now listening on: ([^ ]+)')
 
 do 
 {
     $aspNetCoreUiJob | Receive-Job | Tee-Object -Variable "jobOutput" | Out-Default
     Start-Sleep -Milliseconds 500
-} while ($jobOutput -notmatch 'Now listening on: ([^ ]+)')
+} while ([string]$jobOutput -notmatch 'Now listening on: ([^ ]+)')
 
 Push-Location DataLoader
 

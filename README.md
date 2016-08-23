@@ -28,11 +28,11 @@ The application demonstrates the use of the following concepts and technologies 
 2. **Start Neo4j** Community Edition. 
   - You may open the  Neo4j web administration to see the changes there, but *do not change the password!*
 2. Run the PowerShell script in `src\RunAll.ps1`
-  - [x] The ASP.NET Core single-page application starts on URL: http://localhost:5000/
+  - [x] The ASP.NET Core single-page application starts on URL: [http://localhost:5000/](http://localhost:5000/)
     - Use the Graph URL input field to display your graph. The URL should follow this template:<br/>
       `{web-service-base-url}/graphs/{graph-name}`.
     - To select multiple nodes for shortest path search, use `[ctrl]+(click)` or a longheld click (or touch).
-  - [x] The ASP.NET Core REST API starts on URL: http://localhost:5001/api/v1/
+  - [x] The ASP.NET Core REST API starts on URL: [http://localhost:5001/api/v1/](http://localhost:5001/api/v1/)
     - You may test the API using the Postman collection in `samples/postman` folder.
   - [x] The Data Loader loads data from folder `samples\input-data` as a graph called `graph1`.
 
@@ -43,6 +43,6 @@ If you want to run the **WCF HTTP Services**:
   - Project `WebServices.Wcf` will fail to build initially because it doesn't reference the other projects by a project reference; instead, it references the dlls. Project reference doesn't seem to work in this tooling preview. On the second run it should succeed.
 3. Right-click the project named `WebServices.Wcf`, set it as a startup project.
 4. Hit `[ctrl]+[f5]`.
-5. The service should start on URL: http://localhost:5002/GraphService.svc/
+5. The service should start on URL: [http://localhost:5002/GraphService.svc/](http://localhost:5002/GraphService.svc/)
   - Ignore the WCF client window that probably opens.
   - You may test the API using the Postman collection in `samples/postman` folder.

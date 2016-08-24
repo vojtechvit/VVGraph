@@ -16,7 +16,7 @@
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css"
-              asp-fallback-href="~/lib/vis/dist/vis.css"
+              asp-fallback-href="~/lib/vis/dist/vis-network.min.css"
               asp-fallback-test-class="vis-active" asp-fallback-test-property="box-shadow" asp-fallback-test-value="0 0 10px #86d5f8" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
@@ -26,15 +26,22 @@
 
     <environment names="Development">
         <script src="~/lib/angular/angular.js"></script>
+        <script src="~/lib/angular-messages/angular-messages.js"></script>
+        <script src="~/lib/angular-vis/angular-vis.js"></script>
         <script src="~/lib/vis/dist/vis.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"
                 asp-fallback-src="~/lib/angular/angular.min.js"
                 asp-fallback-test="window.angular">
         </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.js"
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-messages.js"
+                asp-fallback-src="~/lib/angular-messages/angular-messages.js"
+                asp-fallback-test="(function() { try { window.angular.module('ngMessages'); } catch(e) { return false; } return true; })()">
+        </script>
+        <script src="~/lib/angular-vis/angular-vis.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.js"
                 asp-fallback-src="~/lib/vis/dist/vis.js"
                 asp-fallback-test="window.vis">
         </script>

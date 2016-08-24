@@ -8,37 +8,38 @@
     </div>
 </div>
 
-<div class="container" ng-controller="HomeController" ng-cloak>
-    <div class="row">
+<div class="container" ng-cloak ng-controller="HomeController as home">
+    <div class="row" ng-controller="GraphSelectorController as selector">
         <div class="col-xs-12">
-            <form class="form-inline" ng-submit="changeGraph()">
+            <form class="form-inline" ng-submit="selector.selectGraph()">
                 <div class="form-group">
-                    <label for="exampleInputName2">Graph URL</label>
-                    <input type="text" size="100" class="form-control" id="exampleInputName2" ng-model="graphUrl">
+                    <label for="graph-url">Graph URL:</label>
+                    <input type="text" size="100" class="form-control" id="graph-url" ng-model="selector.graphUrl">
                 </div>
-                <button type="submit" class="btn btn-default">Update</button>
+                <button type="submit" class="btn btn-default">Load Graph</button>
             </form>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <h2>{{graphName}}</h2>
+            <h2 ng-bind="home.graph.name"></h2>
         </div>
     </div>
-    <div class="row" ng-show="errorMessage != null">
-        <div class="col-xs-12">
-            <p class="bg-danger">{{errorMessage}}</p>
+    <div class="row" ng-controller="ErrorController as err" ng-show="err.error">
+        <div class="col-xs-12" ng-messages="err.error" role="alert">
+            <p ng-message="getGraphApiError" class="bg-danger">Could not load the graph on the specified URL.</p>
+            <p ng-message="shortestPathApiError" class="bg-danger">Could not load the shortest path.</p>
         </div>
     </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div id="graph-container"></div>
+    <div ng-hide="!home.graph" class="row" ng-controller="GraphController as graph">
+        <div id="graph-container" class="col-xs-12">
+            <vis-network data="graph.graphData" options="graph.graphOptions" events="graph.graphEvents"></vis-network>
         </div>
     </div>
-    <div class="row">
+    <div ng-hide="!home.graph" class="row" ng-controller="GraphActionsController as actions">
         <div class="col-xs-12">
-            <form ng-submit="findShortestPath()">
-                <button type="submit" ng-disabled="startNodeId == null || endNodeId == null" class="btn btn-default" id="find-shortest-path">
+            <form ng-submit="actions.findShortestPath()">
+                <button type="submit" ng-disabled="actions.selectedNodeIds.length != 2" class="btn btn-default" id="find-shortest-path">
                     Find Shortest Path
                 </button>
             </form>

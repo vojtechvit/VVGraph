@@ -1,11 +1,14 @@
 ﻿(function () {
   var app = angular
-    .module('app', ['ngMessages', 'ngVis'])
+    .module('app', ['ngMessages', 'angularVis'])
 
     .constant('config', {
+      graphName: 'main',
       defaultGraphUrl: 'http://localhost:5001/api/v1/graphs/test1',
       shortestPathEndpoint: '/shortest-path'
     })
+
+    constant('')
 
     .controller('HomeController',
       ['$scope',
@@ -52,28 +55,31 @@
       }])
 
     .controller('GraphController',
-      ['$rootScope', '$scope', 'graphApi', 'visDataSetHelper',
-      function ($rootScope, $scope, graphApi, visDataSetHelper) {
+      ['$rootScope', '$scope', 'config', 'graphApi', 'visHelper',
+      function ($rootScope, $scope, config, graphApi, visHelper) {
         var self = this;
 
-        self.graphData = {};
+        visHelper.setOptions(
+          config.graphName,
+          {
+            interaction: {
+              hover: true,
+              multiselect: true,
+              selectConnectedEdges: false,
+              navigationButtons: true
+            }
+          });
 
-        self.graphOptions = {
-          interaction: {
-            hover: true,
-            multiselect: true,
-            selectConnectedEdges: false,
-            navigationButtons: true
-          }
-        };
-
-        self.graphEvents = {
-          selectNode: function (event) {
-            $rootScope.$broadcast('nodeSelected', { selectedNodeIds: event.nodes });
-          },
-          deselectNode: function (event) {
-            $rootScope.$broadcast('nodeUnselected', { selectedNodeIds: event.nodes });
-          }};
+        visHelper.setEvents(
+          config.graphName, 
+          {
+            selectNode: function (event) {
+              $scope.$apply(function () { $rootScope.$broadcast('nodeSelected', { selectedNodeIds: event.nodes }) });
+            },
+            deselectNode: function (event) {
+              $scope.$apply(function () { $rootScope.$broadcast('nodeUnselected', { selectedNodeIds: event.nodes }) });
+            }
+          });
 
         $scope.$on('graphSelected', function (event, args) {
           graphApi.getGraph(args.graphUrl)
@@ -82,13 +88,10 @@
 
         self.loadGraph = function (response) {
           var graph = response.data;
-          var nodes = visDataSetHelper.mapNodes(graph.nodes);
-          var edges = visDataSetHelper.mapEdges(graph.edges);
 
-          self.graphData = {
-            nodes: nodes,
-            edges: edges
-          };
+          visHelper.setNodes(config.graphName, graph.nodes);
+          visHelper.setEdges(config.graphName, graph.edges);
+          visHelper.redraw();
 
           $rootScope.$broadcast('graphLoaded', { graph: graph });
         };
@@ -98,14 +101,14 @@
         };
 
         $scope.$on('pathFound', function (event, args) {
-          visDataSetHelper.highlightPath(self.graphData, args.pathNodeIds);
-          self.graphData = { nodes: self.graphData.nodes, edges: self.graphData.edges };
+          visHelper.highlightPath(config.graphName, args.pathNodeIds);
+          visHelper.redraw();
         });
       }])
 
     .controller('GraphActionsController',
-      ['$rootScope', '$scope', 'graphApi',
-      function ($rootScope, $scope, graphApi) {
+      ['$rootScope', '$scope', 'config', 'graphApi', 'visHelper',
+      function ($rootScope, $scope, config, graphApi, visHelper) {
         var self = this;
 
         self.graphUrl = null;
@@ -131,18 +134,16 @@
         });
 
         $scope.$on('nodeSelected', function (event, args) {
-          /*if (args.selectedNodeIds.length > 2) {
-            //$rootScope.$broadcast('setGraphNodes', { nodeIds: self.selectedNodeIds });
-            self.selectedNodeIds = args.selectedNodeIds.slice();
+          if (args.selectedNodeIds.length > 2) {
+            visHelper.setSelectedNodes(config.graphName, self.selectedNodeIds);
           }
           else {
             self.selectedNodeIds = args.selectedNodeIds.slice();
-          }*/
-          $scope.$apply(function () { self.selectedNodeIds = args.selectedNodeIds.slice(); });
+          }
         });
 
         $scope.$on('nodeUnselected', function (event, args) {
-          $scope.$apply(function () { self.selectedNodeIds = args.selectedNodeIds.slice(); });
+          self.selectedNodeIds = args.selectedNodeIds.slice();
         });
       }])
 
@@ -164,84 +165,4 @@
             })
           }
         }}])
-
-    .factory('visDataSetHelper',
-    [
-    function () {
-      return {
-        mapNodes: function (nodes) {
-          var dsNodes = new vis.DataSet();
-
-          nodes.forEach(function (n) {
-            dsNodes.add([{
-              id: n.id,
-              label: n.label,
-              shape: 'circle',
-              color: {
-                border: '#000000',
-                background: '#ffffff',
-                hover: {
-                  border: '#000000',
-                  background: '#dddddd'
-                }
-              }
-            }]);
-          });
-
-          return dsNodes;
-        },
-        mapEdges: function (edges) {
-          var dsEdges = new vis.DataSet();
-
-          edges.forEach(function (e) {
-            dsEdges.add([{
-              from: e.startNodeId,
-              to: e.endNodeId,
-              color: {
-                color: '#000000',
-                inherit: false
-              },
-              width: 1
-            }]);
-          });
-
-          return dsEdges;
-        },
-        highlightPath: function(data, pathNodeIds) {
-          data.nodes.forEach(function (n) {
-            if (pathNodeIds.indexOf(n.id) != -1) {
-              var border = '#32a800';
-              var background = '#e6ffdb';
-            }
-            else {
-              var border = '#000000';
-              var background = '#ffffff';
-            }
-
-            n.color.border = border;
-            n.color.background = background;
-          });
-
-          data.edges.forEach(function (e) {
-            var indexOfFrom = pathNodeIds.indexOf(e.from);
-            var indexOfTo = pathNodeIds.indexOf(e.to);
-
-            if ((indexOfFrom != -1 && indexOfTo != -1)
-                    && (indexOfTo == indexOfFrom + 1
-                        || indexOfTo == indexOfFrom - 1)) {
-              var color = '#32a800';
-              var width = 2;
-            }
-            else {
-              var color = '#000000';
-              var width = 1;
-            }
-
-            e.color.color = color;
-            e.width = width;
-          });
-
-          return data;
-        }
-      }}])
 })();

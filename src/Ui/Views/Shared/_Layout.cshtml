@@ -27,8 +27,8 @@
     <environment names="Development">
         <script src="~/lib/angular/angular.js"></script>
         <script src="~/lib/angular-messages/angular-messages.js"></script>
-        <script src="~/lib/angular-vis/angular-vis.js"></script>
         <script src="~/lib/vis/dist/vis.js"></script>
+        <script src="~/js/angular-vis.js" asp-append-version="true"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
@@ -40,11 +40,11 @@
                 asp-fallback-src="~/lib/angular-messages/angular-messages.js"
                 asp-fallback-test="(function() { try { window.angular.module('ngMessages'); } catch(e) { return false; } return true; })()">
         </script>
-        <script src="~/lib/angular-vis/angular-vis.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.js"
                 asp-fallback-src="~/lib/vis/dist/vis.js"
                 asp-fallback-test="window.vis">
         </script>
+        <script src="~/js/angular-vis.js.js" asp-append-version="true"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 

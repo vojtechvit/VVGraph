@@ -33,7 +33,7 @@
     </div>
     <div ng-hide="!home.graph" class="row" ng-controller="GraphController as graph">
         <div id="graph-container" class="col-xs-12">
-            <vis-network data="graph.graphData" options="graph.graphOptions" events="graph.graphEvents"></vis-network>
+            <vis-network name="main" data="graph.graphData" options="graph.graphOptions" events="graph.graphEvents"></vis-network>
         </div>
     </div>
     <div ng-hide="!home.graph" class="row" ng-controller="GraphActionsController as actions">

@@ -34,98 +34,11 @@
       ]
     })
 
-    .factory('visHelper',
-    ['angularVisConfig',
-    function (angularVisConfig) {
+    .factory('visHelper', ['angularVisConfig', function (angularVisConfig) {
       return {
-        setNodes: function (networkName, nodes) {
-          angularVisConfig.networks[networkName].body.data.nodes.clear();
-
-          nodes.forEach(function (n) {
-            angularVisConfig.networks[networkName].body.data.nodes.add([{
-              id: n.id,
-              label: n.label,
-              shape: 'circle',
-              color: {
-                border: '#000000',
-                background: '#ffffff',
-                hover: {
-                  border: '#000000',
-                  background: '#dddddd'
-                }
-              }
-            }]);
-          });
-
-          angularVisConfig.networks[networkName].setData(angularVisConfig.networks[networkName].body.data);
-        },
-
-        setEdges: function (networkName, edges) {
-          angularVisConfig.networks[networkName].body.data.edges.clear();
-
-          angularVisConfig.networks[networkName].body.data.edges.forEach(function (e) {
-            dsEdges.add([{
-              from: e.startNodeId,
-              to: e.endNodeId,
-              color: {
-                color: '#000000',
-                inherit: false
-              },
-              width: 1
-            }]);
-          });
-
-          angularVisConfig.networks[networkName].setData(angularVisConfig.networks[networkName].body.data);
-        },
-
-        highlightPath: function (networkName, pathNodeIds) {
-          angularVisConfig.networks[networkName].body.data.nodes.forEach(function (n) {
-            if (pathNodeIds.indexOf(n.id) != -1) {
-              var border = '#32a800';
-              var background = '#e6ffdb';
-            }
-            else {
-              var border = '#000000';
-              var background = '#ffffff';
-            }
-
-            n.color.border = border;
-            n.color.background = background;
-
-            angularVisConfig.networks[networkName].setData(angularVisConfig.networks[networkName].body.data);
-          });
-
-          angularVisConfig.networks[networkName].body.data.edges.forEach(function (e) {
-            var indexOfFrom = pathNodeIds.indexOf(e.from);
-            var indexOfTo = pathNodeIds.indexOf(e.to);
-
-            if ((indexOfFrom != -1 && indexOfTo != -1)
-                    && (indexOfTo == indexOfFrom + 1
-                        || indexOfTo == indexOfFrom - 1)) {
-              var color = '#32a800';
-              var width = 2;
-            }
-            else {
-              var color = '#000000';
-              var width = 1;
-            }
-
-            e.color.color = color;
-            e.width = width;
-
-            angularVisConfig.networks[networkName].setData(angularVisConfig.networks[networkName].body.data);
-          });
-        },
-
-        setSelectedNodes: function (networkName, selectedNodeIds) {
-          angularVisConfig.networks[networkName].setSelection({ nodes: selectedNodeIds });
-        },
-
-        setOptions: function (networkName, options) {
+        initGraph: function (networkName, options, events) {
           angularVisConfig.networks[networkName].setOptions(options);
-        },
 
-        setEvents: function(networkName, events) {
           angular.forEach(events, function (callback, event) {
             if (angularVisConfig.networkEvents.indexOf(String(event)) >= 0) {
               angularVisConfig.networks[networkName].on(event, callback);
@@ -135,6 +48,73 @@
           if (events != null && events.onload != null && angular.isFunction(events.onload)) {
             events.onload(angularVisConfig.networks[networkName]);
           }
+        },
+
+        setNodes: function (networkName, nodes) {
+          angularVisConfig.networks[networkName].body.data.nodes.clear();
+          angularVisConfig.networks[networkName].body.data.nodes.add(nodes);
+          angularVisConfig.networks[networkName].setData({
+            nodes: angularVisConfig.networks[networkName].body.data.nodes,
+            edges: angularVisConfig.networks[networkName].body.data.edges
+          });
+        },
+
+        setEdges: function (networkName, edges) {
+          angularVisConfig.networks[networkName].body.data.edges.clear();
+          angularVisConfig.networks[networkName].body.data.edges.add(edges);
+          angularVisConfig.networks[networkName].setData({
+            nodes: angularVisConfig.networks[networkName].body.data.nodes,
+            edges: angularVisConfig.networks[networkName].body.data.edges
+          });
+        },
+
+        highlightPath: function (networkName, pathNodeIds, options) {
+          var nodes = angularVisConfig.networks[networkName].body.data.nodes.map(function (n) {
+            var color = angular.copy(n.color);
+
+            if (pathNodeIds.indexOf(n.id) != -1) {
+              color.border = options.highlighted.color.border.slice();
+              color.background = options.highlighted.color.background.slice();
+            }
+            else {
+              color.border = options.normal.color.border.slice();
+              color.background = options.normal.color.background.slice();
+            }
+
+            n.color = color;
+
+            return n;
+          });
+
+          var edges = angularVisConfig.networks[networkName].body.data.edges.map(function (e) {
+            var indexOfFrom = pathNodeIds.indexOf(e.from);
+            var indexOfTo = pathNodeIds.indexOf(e.to);
+            var color = angular.copy(e.color);
+
+            if ((indexOfFrom != -1 && indexOfTo != -1)
+                    && (indexOfTo == indexOfFrom + 1
+                        || indexOfTo == indexOfFrom - 1)) {
+              color.color = options.highlighted.color.border.slice();
+              e.width = options.highlighted.width;
+            }
+            else {
+              color.color = options.normal.color.border.slice();
+              e.width = options.normal.width;
+            }
+
+            e.color = color;
+
+            return e;
+          });
+
+          angularVisConfig.networks[networkName].setData({
+            nodes: nodes,
+            edges: edges
+          });
+        },
+
+        setSelectedNodes: function (networkName, selectedNodeIds) {
+          angularVisConfig.networks[networkName].setSelection({ nodes: selectedNodeIds });
         },
 
         redraw: function (networkName) {
@@ -148,12 +128,14 @@
         restrict: 'EA',
         transclude: false,
         scope: {
-          name: '='
+          name: '@'
         },
         link: function (scope, element, attr) {
-          if (!angularVisConfig.networks[scope.name]) {
-            angularVisConfig.networks[scope.name] = new vis.Network(element[0]);
-          }
+          scope.$watch('name', function () {
+            if (!angularVisConfig.networks.hasOwnProperty(scope.name) || !angularVisConfig.networks[scope.name]) {
+              angularVisConfig.networks[scope.name] = new vis.Network(element[0]);
+            }
+          });
         }
       };
     }])

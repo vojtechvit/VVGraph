@@ -5,10 +5,26 @@
     .constant('config', {
       graphName: 'main',
       defaultGraphUrl: 'http://localhost:5001/api/v1/graphs/test1',
-      shortestPathEndpoint: '/shortest-path'
+      shortestPathEndpoint: '/shortest-path',
+      nodeOptions: {
+        shape: 'circle',
+        color: {
+          border: '#000000',
+          background: '#ffffff',
+          hover: {
+            border: '#000000',
+            background: '#dddddd'
+          }
+        }
+      },
+      edgeOptions: {
+        color: {
+          color: '#000000',
+          inherit: false
+        },
+        width: 1
+      }
     })
-
-    constant('')
 
     .controller('HomeController',
       ['$scope',
@@ -59,7 +75,13 @@
       function ($rootScope, $scope, config, graphApi, visHelper) {
         var self = this;
 
-        visHelper.setOptions(
+        $scope.$on('graphSelected', function (event, args) {
+          graphApi.getGraph(args.graphUrl)
+            .then(self.loadGraph, self.graphError);
+        });
+
+        self.loadGraph = function (response) {
+          visHelper.initGraph(
           config.graphName,
           {
             interaction: {
@@ -68,10 +90,7 @@
               selectConnectedEdges: false,
               navigationButtons: true
             }
-          });
-
-        visHelper.setEvents(
-          config.graphName, 
+          },
           {
             selectNode: function (event) {
               $scope.$apply(function () { $rootScope.$broadcast('nodeSelected', { selectedNodeIds: event.nodes }) });
@@ -81,17 +100,20 @@
             }
           });
 
-        $scope.$on('graphSelected', function (event, args) {
-          graphApi.getGraph(args.graphUrl)
-            .then(self.loadGraph, self.graphError);
-        });
-
-        self.loadGraph = function (response) {
           var graph = response.data;
+          
+          visHelper.setNodes(config.graphName, graph.nodes.map(function (n) {
+            angular.extend(n, config.nodeOptions);
+            return n;
+          }))
 
-          visHelper.setNodes(config.graphName, graph.nodes);
-          visHelper.setEdges(config.graphName, graph.edges);
-          visHelper.redraw();
+          visHelper.setEdges(config.graphName, graph.edges.map(function (e) {
+            var edge = { from: e.startNodeId, to: e.endNodeId };
+            angular.extend(edge, config.edgeOptions);
+            return edge;
+          }));
+
+          visHelper.redraw(config.graphName);
 
           $rootScope.$broadcast('graphLoaded', { graph: graph });
         };
@@ -101,8 +123,25 @@
         };
 
         $scope.$on('pathFound', function (event, args) {
-          visHelper.highlightPath(config.graphName, args.pathNodeIds);
-          visHelper.redraw();
+          var higlightOptions = {
+            normal: {
+              color: {
+                border: '#000000',
+                background: '#ffffff'
+              },
+              width: 1
+            },
+            highlighted: {
+              color: {
+                border: '#32a800',
+                background: '#e6ffdb'
+              },
+              width: 2
+            }
+          };
+
+          visHelper.highlightPath(config.graphName, args.pathNodeIds, higlightOptions);
+          visHelper.redraw(config.graphName);
         });
       }])
 

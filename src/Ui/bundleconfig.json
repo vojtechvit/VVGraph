@@ -20,5 +20,11 @@
     "inputFiles": [
       "wwwroot/lib/angular-vis/angular-vis.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/angular-vis.min.js",
+    "inputFiles": [
+      "wwwroot/js/angular-vis.js"
+    ]
   }
 ]

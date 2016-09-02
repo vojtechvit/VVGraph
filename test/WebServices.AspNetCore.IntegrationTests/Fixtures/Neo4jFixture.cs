@@ -7,7 +7,7 @@ namespace WebServices.AspNetCore.IntegrationTests.Fixtures
     {
         public Neo4jFixture()
         {
-            Client = new GraphClient(new Uri("http://test"));
+            Client = new GraphClient(new Uri("http://neo4j:pass123@localhost:7474/db/data"));
             Client.Connect();
         }
 

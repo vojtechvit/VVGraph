@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using Newtonsoft.Json;
+﻿using Neo4jClient;
+using Neo4jClient.Transactions;
 using System;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using WebServices.AspNetCore.IntegrationTests.Fixtures;
 using WebServices.AspNetCore.IntegrationTests.Graphs.Model;
@@ -13,47 +10,41 @@ using Xunit;
 
 namespace WebServices.AspNetCore.IntegrationTests.Graphs
 {
-    public sealed class Put
+    public sealed class Put : IDisposable, IClassFixture<TestServerFactory>, IClassFixture<Neo4jFixture>
     {
-        private readonly TestServerBuilder serverBuilder;
+        private readonly PutRequestBuilder requestBuilder;
 
-        private string requestPayloadRaw;
+        private readonly ITransactionalGraphClient graphClient;
 
-        public Put(TestServerFactory serverFactory)
+        public Put(TestServerFactory serverFactory, Neo4jFixture neo4j)
         {
-            this.serverBuilder = serverFactory.Create();
+            var serverBuilder = serverFactory.Create();
+            requestBuilder = new PutRequestBuilder(serverBuilder);
+            graphClient = neo4j.Client;
+
+            serverBuilder.ConfigureServices(services =>
+            {
+                services.ReplaceWithSingleton<IGraphClient>(neo4j.Client);
+            });
+
+            graphClient.BeginTransaction();
         }
 
-        private string RequestGraphName { get; set; } = Guid.NewGuid().ToString("N");
-
-        private string RequestPath => string.Format("/api/v1/graphs/{0}", RequestGraphName);
-
-        private Graph RequestPayloadObject { get; set; }
-
-        private Encoding RequestEncoding { get; set; } = Encoding.UTF8;
-
-        private string RequestContentType { get; set; } = "application/json";
-
-        public string RequestPayload
+        public void Dispose()
         {
-            get { return requestPayloadRaw ?? JsonConvert.SerializeObject(RequestPayloadObject); }
-            set { requestPayloadRaw = value; }
+            graphClient.EndTransaction();
         }
-
-        public RequestBuilder CreateBaseValidRequest()
-            => new RequestBuilder(serverBuilder.Build(), RequestPath)
-            .And(m => m.Content = new StringContent(RequestPayload, RequestEncoding, RequestContentType));
 
         [Theory]
         [AllValidGraphs]
         public async Task ValidNonexistentGraphs_NoContent(Graph graph)
         {
             //// Arrange
-            RequestPayloadObject = graph;
-            var request = CreateBaseValidRequest();
+            requestBuilder.PayloadObject = graph;
+            var request = requestBuilder.Build();
 
             //// Act
-            var response = await request.SendAsync("PUT");
+            var response = await request.SendAsync();
 
             //// Assert
             response.EnsureSuccessStatusCode();

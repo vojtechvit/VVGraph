@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WebServices.AspNetCore.IntegrationTests.Graphs.Model;
 
 namespace WebServices.AspNetCore.IntegrationTests.Graphs.SampleData
@@ -16,7 +17,7 @@ namespace WebServices.AspNetCore.IntegrationTests.Graphs.SampleData
         public static Graph CreateGraphWithNodesAndEdges()
             => new Graph
             {
-                Name = "graph-with-nodes-and-edges",
+                Name = Guid.NewGuid().ToString("N"),
                 Nodes = new[]
                 {
                     new Node { Id = 1, Label = "node1" },

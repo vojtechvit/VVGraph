@@ -2,13 +2,9 @@
 using Domain.Model;
 using Domain.Repositories.Contracts;
 using Neo4jClient;
-using Neo4jClient.Transactions;
-using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using WebServices.DataAccess.Neo4j.Mappers.Contracts;
 
 namespace WebServices.DataAccess.Neo4j.Repositories
